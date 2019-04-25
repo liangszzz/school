@@ -45,7 +45,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/error", "anon");
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/**", "passThruAuthenticationFilter");
-        bean.setLoginUrl("/unauth");
+//        bean.setLoginUrl("/unauth");
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         LinkedHashMap<String, Filter> filters = new LinkedHashMap<>();
         filters.put("passThruAuthenticationFilter", new MyPassThruAuthenticationFilter());

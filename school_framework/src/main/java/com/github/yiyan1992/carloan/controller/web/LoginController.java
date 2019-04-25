@@ -5,6 +5,7 @@ import com.github.yiyan1992.carloan.entity.query.Query2;
 import com.github.yiyan1992.carloan.entity.response.Response;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresGuest;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
@@ -20,12 +21,23 @@ import java.util.List;
 @RestController
 public class LoginController {
 
+    /**
+     * 用来测试用户是否已经登陆
+     *
+     * @return
+     */
+    @RequiresAuthentication
     @GetMapping(value = "/")
-    public String index() {
-        return "index";
+    public Response checkLogin() {
+        return Response.SUCCESS();
     }
 
-
+    /**
+     * 登陆
+     *
+     * @param login
+     * @return
+     */
     @PostMapping(value = "/login")
     public Response login(Login login) {
         Subject subject = SecurityUtils.getSubject();
@@ -36,15 +48,15 @@ public class LoginController {
         return response;
     }
 
-    @RequiresPermissions("user:query")
-    @GetMapping(value = "/query")
-    public String query() {
-        return "query";
-    }
-
-
-    @GetMapping(value = "/unauth")
-    public Response unauth() {
-        return Response.of(500, "unauth or error");
+    /**
+     * 获取用户信息
+     *
+     * @return
+     */
+    @PostMapping(value = "/home")
+    public Response home() {
+        Subject subject = SecurityUtils.getSubject();
+        String username = (String) subject.getPrincipals().getPrimaryPrincipal();
+        return Response.of(200, username);
     }
 }
