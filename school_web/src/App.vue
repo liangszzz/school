@@ -20,7 +20,8 @@
                 if (res.data.code == 200) {
                     t.$message({
                         message: '登陆成功!',
-                        type: 'success'
+                        type: 'success',
+                        showClose: true,
                     });
                     t.$router.replace("/home")
                 } else {

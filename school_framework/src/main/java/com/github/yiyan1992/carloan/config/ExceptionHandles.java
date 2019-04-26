@@ -15,6 +15,7 @@ public class ExceptionHandles {
     @ResponseBody
     @ExceptionHandler(value = AuthorizationException.class)
     public Response noAuthExceptionHandler(Exception ex) {
+        log.info("no auth error", ex);
         return Response.of(300, "no auth");
     }
 
