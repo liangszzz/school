@@ -29,7 +29,7 @@
                         <template slot="title">
                             <span>系统管理</span>
                         </template>
-                        <el-menu-item index="/manage">
+                        <el-menu-item index="/user">
                             管理员管理
                         </el-menu-item>
                     </el-submenu>
@@ -123,7 +123,7 @@
         },
         methods: {
             created() {
-                //获取用户信息
+
             },
             handleCommand(command) {
                 switch (command) {
@@ -136,7 +136,9 @@
                 }
             },
             updatePwd() {
+                Vue.axios.post("/user/updatePwd", this.form).then(function (res) {
 
+                });
                 this.dialogFormVisible = false
             },
             logout() {

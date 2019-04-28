@@ -1,5 +1,6 @@
 package com.github.yiyan1992.carloan.entity.sys;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.yiyan1992.carloan.entity.request.Request;
 import lombok.Data;
 import org.springframework.data.domain.Example;
@@ -23,6 +24,10 @@ public class User extends Request<User> implements Serializable {
     @Column(name = "username", length = 50)
     private String username;
 
+    @Column(name = "name",length = 50)
+    private String name;
+
+    @JsonIgnore
     @Column(name = "password", length = 150)
     private String password;
 
@@ -38,7 +43,8 @@ public class User extends Request<User> implements Serializable {
     @Column(name = "fail_count")
     private Integer failCount;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+
+    @ManyToMany
     @JoinTable(name = "s_user_role",
             joinColumns = {@JoinColumn(name = "username", foreignKey = @ForeignKey(name = "username"))},
             inverseJoinColumns = {@JoinColumn(name = "role_name", foreignKey = @ForeignKey(name = "role_name"))})

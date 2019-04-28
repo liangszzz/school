@@ -11,30 +11,20 @@ import java.io.Serializable;
  */
 @Data
 @NoArgsConstructor
-public class Response<T> implements Serializable {
+public class Response implements Serializable {
 
     private int code;
 
-    private String msg;
+    private Object entity;
 
-    private T entity;
-
-    public Response(int code, String msg) {
-        this.code = code;
-        this.msg = msg;
+    public static Response SUCCESS(Object obj) {
+        return Response.of(200, obj);
     }
 
-    public static Response SUCCESS() {
-        return new Response(200, "success");
-    }
-
-    public static Response of(int code, String msg) {
-        return new Response(code, msg);
-    }
-
-    public static Response of(Page page) {
-        Response response = new Response<>(200, "success");
-        response.setEntity(page);
+    public static Response of(int code, Object t) {
+        Response response = new Response();
+        response.code = code;
+        response.entity = t;
         return response;
     }
 }

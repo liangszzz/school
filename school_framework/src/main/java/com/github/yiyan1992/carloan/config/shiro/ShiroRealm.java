@@ -53,7 +53,6 @@ public class ShiroRealm extends AuthorizingRealm {
                         user.get().getPassword(),
                         getName()
                 );
-
             }
         } else if (MagicValue.isTeacher(username)) {
             username = username.substring(MagicValue.LOGIN_TYPE_1.length());

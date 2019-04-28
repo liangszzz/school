@@ -23,8 +23,8 @@ public class UserService {
     }
 
     @CacheEvict(cacheNames = "users", key = "#user.username")
-    public void save(User user) {
-        userDao.save(user);
+    public User save(User user) {
+        return userDao.save(user);
     }
 
     @CacheEvict(cacheNames = "users", allEntries = true)
@@ -34,5 +34,9 @@ public class UserService {
 
     public Page<User> findListByUser(Example user, PageRequest pageRequest) {
         return userDao.findAll(user, pageRequest);
+    }
+
+    public void delete(User user) {
+        userDao.delete(user);
     }
 }

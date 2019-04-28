@@ -1,5 +1,6 @@
 package com.github.yiyan1992.carloan.entity.sys;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -22,7 +23,8 @@ public class Role implements Serializable {
     @Column(name = "role_desc",length = 200)
     private String roleDesc;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
+    @ManyToMany
     @JoinTable(name = "s_role_menu",
             joinColumns = {@JoinColumn(name = "role_name",foreignKey = @ForeignKey(name = "role_name"))},
             inverseJoinColumns = {@JoinColumn(name = "menu_id",foreignKey = @ForeignKey(name = "id"))}
