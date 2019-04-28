@@ -7,7 +7,7 @@ import lombok.Data;
  * @author admin
  */
 @Data
-public class Login {
+public class LoginQuery {
 
     private String username;
 

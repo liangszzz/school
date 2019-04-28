@@ -2,9 +2,9 @@ package com.github.yiyan1992.carloan.entity.response;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.io.Serializable;
-import java.util.HashMap;
 
 /**
  * @author admin
@@ -19,10 +19,6 @@ public class Response<T> implements Serializable {
 
     private T entity;
 
-    private Page<T> page;
-
-    private HashMap<String, Object> others;
-
     public Response(int code, String msg) {
         this.code = code;
         this.msg = msg;
@@ -34,5 +30,11 @@ public class Response<T> implements Serializable {
 
     public static Response of(int code, String msg) {
         return new Response(code, msg);
+    }
+
+    public static Response of(Page page) {
+        Response response = new Response<>(200, "success");
+        response.setEntity(page);
+        return response;
     }
 }

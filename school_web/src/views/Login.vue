@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <header>
-            <h3>校园信息管理平台</h3>
+            <h2>校园信息管理平台</h2>
             <p></p>
         </header>
         <br>

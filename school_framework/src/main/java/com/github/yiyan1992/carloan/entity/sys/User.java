@@ -1,6 +1,10 @@
 package com.github.yiyan1992.carloan.entity.sys;
 
+import com.github.yiyan1992.carloan.entity.request.Request;
 import lombok.Data;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,7 +17,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "s_user")
-public class User implements Serializable {
+public class User extends Request<User> implements Serializable {
 
     @Id
     @Column(name = "username", length = 50)
@@ -23,7 +27,7 @@ public class User implements Serializable {
     private String password;
 
     @Column(name = "remember", length = 1)
-    private int remember;
+    private Integer remember;
 
     @Column(name = "last_login_time")
     private LocalDateTime lastLoginTime;
@@ -32,11 +36,24 @@ public class User implements Serializable {
     private String lastLoginIp;
 
     @Column(name = "fail_count")
-    private int failCount = 0;
+    private Integer failCount;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "s_user_role",
             joinColumns = {@JoinColumn(name = "username", foreignKey = @ForeignKey(name = "username"))},
             inverseJoinColumns = {@JoinColumn(name = "role_name", foreignKey = @ForeignKey(name = "role_name"))})
     private Set<Role> roles;
+
+    @Override
+    public Example<User> getPageExample() {
+        if (StringUtils.isEmpty(username)) {
+            Example<User> userExample = Example.of(this, ExampleMatcher.matching().withIgnorePaths("username"));
+            return userExample;
+        } else {
+            Example<User> userExample = Example.of(this,
+                    ExampleMatcher.matching()
+                            .withMatcher("username", matcher -> matcher.contains()));
+            return userExample;
+        }
+    }
 }

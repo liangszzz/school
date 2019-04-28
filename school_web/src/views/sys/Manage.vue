@@ -1,72 +1,89 @@
 <template>
-    <div>
-        <!--查询card-->
-        <el-card>
-            <el-form :model="form" label-width="80px">
-                <el-form-item label="用户名">
-                    <el-col :span="6">
-                        <el-input v-model="form.username" clearable size="small"></el-input>
-                    </el-col>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="search"><i class="el-icon-search"></i>查询</el-button>
-                    <el-button type="primary"><i class="el-icon-plus el-icon-left"></i>添加</el-button>
-                </el-form-item>
-            </el-form>
-        </el-card>
-        <el-table :data="tableData">
-            <el-table-column fixed prop="date" label="日期" width="150">
-            </el-table-column>
-            <el-table-column prop="name" label="姓名" width="120">
-            </el-table-column>
-            <el-table-column prop="province" label="省份" width="120">
-            </el-table-column>
-            <el-table-column prop="city" label="市区" width="120">
-            </el-table-column>
-            <el-table-column prop="address" label="地址" width="300">
-            </el-table-column>
-            <el-table-column prop="zip" label="邮编" width="120">
-            </el-table-column>
-            <el-table-column fixed="right" label="操作" width="120">
-                <template slot-scope="scope">
-                    <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">
-                        移除
-                    </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+    <div id="app">
+        <el-row>
+            <el-col :span="6">
+                <el-form :model="queryForm" ref="queryForm" label-width="80px" :inline="true" style="width: 100%">
+                    <el-form-item label="用户名">
+                        <el-input v-model="queryForm.username" clearable></el-input>
+                    </el-form-item>
+                </el-form>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-button @click="searchForm('queryForm')">查询</el-button>
+            <el-button>重置</el-button>
+            <el-button>添加</el-button>
+        </el-row>
+        <el-row>
+            <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="username" label="用户名" width="120"/>
+                <el-table-column label="操作" width="100" fixed="right">
+                    <template slot-scope="scope">
+                        <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+                        <el-button type="text" size="small">编辑</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="queryForm.page"
+                    :page-sizes="[10, 20, 50]"
+                    :page-size="queryForm.size"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="queryForm.total">
+            </el-pagination>
+        </el-row>
     </div>
 </template>
 
 <script lang="ts">
-    import {Component, Prop, Vue} from 'vue-property-decorator';
+    import Vue from 'vue'
 
-    @Component
-    export default class Manage extends Vue {
+    export default Vue.extend({
 
-        form = {
-            username:  ' '
-        };
+        data() {
+            return {
+                queryForm: {
+                    username: null,
+                    page: 0,
+                    size: 10,
+                    total: 0,
+                },
+                tableData: [],
+            }
+        },
+        created() {
+            this.searchForm("queryForm");
+        },
+        methods: {
+            handleSizeChange(val: number) {
+                this.queryForm.size = val;
+                this.searchForm('queryForm');
+            },
+            handleCurrentChange(val: number) {
+                this.queryForm.page = val;
+                this.searchForm('queryForm');
+            },
+            searchForm(formName: string) {
+                let t = this;
+                Vue.axios.post("/manage/list", t.queryForm).then(function (res) {
+                    if (res.data.code == 200) {
+                        t.tableData = res.data.page.content;
+                    }
+                })
+            },
+            resetForm(formName: string) {
 
-        tableData = [{
-            date: '2016-05-03',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-        }];
+            },
+            toAdd() {
 
-        created(): void {
-            console.log( '##created ');
-        }
+            },
+        },
 
 
-        search(): void {
-            console.log( '##search ');
-        }
+    });
 
-    }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
