@@ -52,7 +52,6 @@
                             password: t.form.password,
                             loginType: "0"
                         }).then(function (res) {
-                            console.log(res);
                             if (res.data.code == 200) {
                                 t.$message({
                                     message: '登陆成功!',

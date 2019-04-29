@@ -36,8 +36,12 @@
             </el-pagination>
         </el-row>
 
-        <el-dialog title="dialog.title" :visible.sync="dialog.show">
-            <el-form :model="dialog.form" label-width="90px" :rules="dialog.rules" ref="dialog.form">
+        <el-dialog :visible.sync="dialog.show">
+            <div slot="title" class="header-title">
+                <span> {{ dialog.title }}</span>
+            </div>
+            <el-form :model="dialog.form" label-width="80px" :rules="dialog.rules" ref="dialog.form"
+                     style="width: 50%;margin-left: 25%;margin-right: 25%;">
                 <el-form-item label="用户名" prop="username">
                     <el-input v-model="dialog.form.username" autocomplete="off" show-password></el-input>
                 </el-form-item>
@@ -75,8 +79,20 @@
                 dialog: {
                     title: "添加",
                     show: false,
-                    form: {},
-                    rules: {}
+                    form: {
+                        username: "",
+                        name: "",
+                        password: "",
+                    },
+                    rules: {
+                        username: [
+                            {required: true, message: '请输入用户名', trigger: 'blur'},
+                            {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}],
+                        name: [
+                            {required: true, message: '请输入密码', trigger: 'blur'}],
+                        password: [
+                            {required: true, message: '请输入密码', trigger: 'blur'}],
+                    }
                 }
             }
         },
@@ -104,10 +120,33 @@
                 })
             },
             resetForm(formName: string) {
-
+                this.$refs[formName].resetFields();
             },
             toAdd() {
+                this.dialog.show = true;
+                this.dialog.title = "添加";
+                this.dialog.form = {
+                    username: "",
+                    name: "",
+                    password: "",
+                }
+                this.resetForm('dialog.form')
+            },
+            toUpdate(username: string) {
+                let t = this;
+                Vue.axios.post("/user/findUserByUsername/"+username).then(function (res) {
+                    if (res.data.code == 200) {
+                        t.resetForm('dialog.form')
+                        t.dialog.show = true;
+                        t.dialog.title = "修改";
+                        t.dialog.form = {
+                            username: "",
+                            name: "",
+                            password: "",
+                        }
 
+                    }
+                })
             },
             save() {
 

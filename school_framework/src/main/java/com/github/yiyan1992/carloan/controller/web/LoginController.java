@@ -38,16 +38,4 @@ public class LoginController {
         subject.login(token);
         return Response.SUCCESS(subject.getSession().getId());
     }
-
-    /**
-     * 获取用户信息
-     *
-     * @return
-     */
-    @PostMapping(value = "/home")
-    public Response home() {
-        Subject subject = SecurityUtils.getSubject();
-        String username = (String) subject.getPrincipals().getPrimaryPrincipal();
-        return Response.of(200, username);
-    }
 }

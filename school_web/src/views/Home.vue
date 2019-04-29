@@ -90,6 +90,15 @@
     import Vue from 'vue'
 
     export default Vue.extend({
+        created() {
+            let t = this;
+            Vue.axios.post("/user/home").then(function (res) {
+                if (res.data.code == 200) {
+                    t.username = res.data.entity;
+                }
+            })
+        }
+        ,
         data() {
             let validatePass3 = (rule, value, callback) => {
                 if (value === '') {
@@ -102,7 +111,7 @@
             };
             return {
                 dialogFormVisible: false,
-                username: "abc",
+                username: "",
                 form: {
                     password: "",
                     password2: "",
@@ -120,11 +129,9 @@
                     ],
                 },
             }
-        },
+        }
+        ,
         methods: {
-            created() {
-
-            },
             handleCommand(command) {
                 switch (command) {
                     case 'pwd':
@@ -134,21 +141,33 @@
                         this.logout();
                         break;
                 }
-            },
+            }
+            ,
             updatePwd() {
                 Vue.axios.post("/user/updatePwd", this.form).then(function (res) {
-
+                    if (res.data.code == 200) {
+                        t.$message({
+                            message: '密码修改成功!',
+                            type: 'success',
+                            showClose: true,
+                        });
+                    } else if (res.data.code == 500) {
+                        t.$message({
+                            message: '密码修改失败!',
+                            type: 'error',
+                            showClose: true,
+                        });
+                    }
                 });
                 this.dialogFormVisible = false
-            },
+            }
+            ,
             logout() {
                 sessionStorage.clear();
                 this.$router.replace("/login")
             }
         }
     });
-
-
 </script>
 
 <style>
