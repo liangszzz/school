@@ -36,6 +36,7 @@ public class UserController {
         Page<User> listByUser = userService.findListByUser(user.getPageExample(), user.getPageRequest());
         return Response.of(200, listByUser);
     }
+
     @PostMapping("/findUserByUsername/{username}")
     public Response findUserByUsername(@PathVariable String username) {
         Optional<User> user = userService.findUserByName(username);
@@ -62,14 +63,25 @@ public class UserController {
         return Response.of(500, "保存失败!");
     }
 
-    @PostMapping("/save")
-    public Response save(User user) {
+    @PostMapping("/add")
+    public Response add(User user) {
+        user.setPassword("default123456");
         return Response.of(200, userService.save(user));
     }
 
-    @PostMapping("/delete")
-    public Response delete(User user) {
-        userService.delete(user);
+    @PostMapping("/update")
+    public Response update(User user) {
+        Optional<User> userSql = userService.findUserByName(user.getUsername());
+        if (!userSql.isPresent()) {
+            return Response.of(500, "no this user");
+        }
+        user.setPassword(userSql.get().getPassword());
+        return Response.of(200, userService.save(user));
+    }
+
+    @PostMapping("/deleteByUsername/{username}")
+    public Response delete(@PathVariable String username) {
+        userService.deleteByUsername(username);
         return Response.SUCCESS("");
     }
 }
