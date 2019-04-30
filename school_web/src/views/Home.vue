@@ -1,7 +1,10 @@
 <template>
     <div id="app">
         <el-row class="home-top">
-            <el-col :span="20">
+            <el-col :span="5">
+                学生管理系统
+            </el-col>
+            <el-col :span="15">
                 &nbsp;
             </el-col>
             <el-col :span="4">
