@@ -1,4 +1,4 @@
-package com.github.yiyan1992.carloan.controller.web;
+package com.github.yiyan1992.carloan.controller.school;
 
 import com.github.yiyan1992.carloan.entity.response.Response;
 import com.github.yiyan1992.carloan.entity.sys.User;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/year")
+public class CourseController {
 
     @Autowired
     private UserService userService;
