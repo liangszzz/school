@@ -1,8 +1,12 @@
 package com.github.yiyan1992.carloan.entity.school;
 
+import com.github.yiyan1992.carloan.entity.request.Request;
 import lombok.Data;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 课程
@@ -10,7 +14,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "school_course")
-public class SchoolCourse {
+public class SchoolCourse extends Request<SchoolCourse> implements Serializable {
 
     @Id
     @GeneratedValue
@@ -33,4 +37,10 @@ public class SchoolCourse {
     @OneToOne
     private SchoolYear schoolYear;
 
+    @Override
+    public Example<SchoolCourse> getPageExample() {
+        return Example.of(this,
+                ExampleMatcher.matching()
+                        .withMatcher("name", matcher -> matcher.contains()));
+    }
 }

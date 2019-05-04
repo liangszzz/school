@@ -1,7 +1,10 @@
 package com.github.yiyan1992.carloan.entity.sys;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.yiyan1992.carloan.entity.request.Request;
 import lombok.Data;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,7 +17,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "s_role")
-public class Role implements Serializable {
+public class Role extends Request<Role> implements Serializable {
 
     @Id
     @Column(name = "role_name",length = 50)
@@ -31,4 +34,10 @@ public class Role implements Serializable {
             )
     private Set<Menu> menus;
 
+    @Override
+    public Example<Role> getPageExample() {
+        return Example.of(this,
+                ExampleMatcher.matching()
+                        .withMatcher("roleName", matcher -> matcher.contains()));
+    }
 }

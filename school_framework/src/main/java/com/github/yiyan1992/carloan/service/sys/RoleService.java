@@ -5,6 +5,9 @@ import com.github.yiyan1992.carloan.entity.sys.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,7 +24,19 @@ public class RoleService {
     }
 
     @CacheEvict(cacheNames = "roles", key = "#role.roleName")
-    public void save(Role role) {
-        roleDao.save(role);
+    public Role save(Role role) {
+        return roleDao.save(role);
+    }
+
+    public Page<Role> findPageList(Example<Role> pageExample, PageRequest pageRequest) {
+        return roleDao.findAll(pageExample, pageRequest);
+    }
+
+    public Optional<Role> findById(String roleName) {
+        return roleDao.findById(roleName);
+    }
+
+    public void deleteById(String roleName) {
+        roleDao.deleteById(roleName);
     }
 }

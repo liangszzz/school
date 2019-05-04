@@ -1,8 +1,12 @@
 package com.github.yiyan1992.carloan.entity.school;
 
+import com.github.yiyan1992.carloan.entity.request.Request;
 import lombok.Data;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -11,7 +15,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "school_teacher")
-public class SchoolTeacher {
+public class SchoolTeacher extends Request<SchoolTeacher> implements Serializable {
 
     @Id
     @GeneratedValue
@@ -41,4 +45,10 @@ public class SchoolTeacher {
             inverseJoinColumns = {@JoinColumn(name = "course_id")})
     private Set<SchoolCourse> schoolCourse;
 
+    @Override
+    public Example<SchoolTeacher> getPageExample() {
+        return Example.of(this,
+                ExampleMatcher.matching()
+                        .withMatcher("name", matcher -> matcher.contains()));
+    }
 }

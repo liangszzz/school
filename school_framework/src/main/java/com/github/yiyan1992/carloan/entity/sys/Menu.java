@@ -1,6 +1,9 @@
 package com.github.yiyan1992.carloan.entity.sys;
 
+import com.github.yiyan1992.carloan.entity.request.Request;
 import lombok.Data;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,7 +14,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "s_menu")
-public class Menu implements Serializable {
+public class Menu extends Request<Menu> implements Serializable {
 
     @Id
     @GeneratedValue
@@ -36,4 +39,10 @@ public class Menu implements Serializable {
     @Column(name = "permission", length = 20)
     private String permission;
 
+    @Override
+    public Example<Menu> getPageExample() {
+        return Example.of(this,
+                ExampleMatcher.matching()
+                        .withMatcher("menuName", matcher -> matcher.contains()));
+    }
 }

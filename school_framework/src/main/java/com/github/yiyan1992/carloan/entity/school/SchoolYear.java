@@ -1,8 +1,12 @@
 package com.github.yiyan1992.carloan.entity.school;
 
+import com.github.yiyan1992.carloan.entity.request.Request;
 import lombok.Data;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 学年
@@ -11,7 +15,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "school_year")
-public class SchoolYear {
+public class SchoolYear extends Request<SchoolYear> implements Serializable {
 
     @Id
     @GeneratedValue
@@ -19,4 +23,11 @@ public class SchoolYear {
 
     @Column(unique = true, nullable = false)
     private String name;
+
+    @Override
+    public Example<SchoolYear> getPageExample() {
+        return Example.of(this,
+                ExampleMatcher.matching()
+                        .withMatcher("name", matcher -> matcher.contains()));
+    }
 }

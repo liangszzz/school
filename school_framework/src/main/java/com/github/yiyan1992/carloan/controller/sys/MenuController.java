@@ -1,8 +1,8 @@
-package com.github.yiyan1992.carloan.controller.school;
+package com.github.yiyan1992.carloan.controller.sys;
 
 import com.github.yiyan1992.carloan.entity.response.Response;
-import com.github.yiyan1992.carloan.entity.school.SchoolClass;
-import com.github.yiyan1992.carloan.service.school.SchoolClassService;
+import com.github.yiyan1992.carloan.entity.sys.Menu;
+import com.github.yiyan1992.carloan.service.sys.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,38 +13,38 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/class")
-public class ClassController {
+@RequestMapping("/menu")
+public class MenuController {
 
     @Autowired
-    private SchoolClassService schoolClassService;
+    private MenuService menuService;
 
 
     @PostMapping("/list")
-    public Response list(SchoolClass schoolClass) {
-        Page<SchoolClass> list = schoolClassService.findPageList(schoolClass.getPageExample(), schoolClass.getPageRequest());
+    public Response list(Menu menu) {
+        Page<Menu> list = menuService.findPageList(menu.getPageExample(), menu.getPageRequest());
         return Response.of(200, list);
     }
 
     @PostMapping("/findById/{id}")
     public Response findClassById(@PathVariable Integer id) {
-        Optional<SchoolClass> schoolClass = schoolClassService.findById(id);
+        Optional<Menu> schoolClass = menuService.findById(id);
         return Response.SUCCESS(schoolClass.get());
     }
 
     @PostMapping("/add")
-    public Response add(SchoolClass schoolClass) {
-        return Response.of(200, schoolClassService.save(schoolClass));
+    public Response add(Menu menu) {
+        return Response.of(200, menuService.save(menu));
     }
 
     @PostMapping("/update")
-    public Response update(SchoolClass schoolClass) {
-        return Response.of(200, schoolClassService.save(schoolClass));
+    public Response update(Menu menu) {
+        return Response.of(200, menuService.save(menu));
     }
 
     @PostMapping("/deleteById/{id}")
     public Response delete(@PathVariable Integer id) {
-        schoolClassService.deleteById(id);
+        menuService.deleteById(id);
         return Response.SUCCESS("");
     }
 }
