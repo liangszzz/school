@@ -1,12 +1,9 @@
 <template>
     <div id="app">
         <header>
-            <h2>校园信息管理平台</h2>
+            <h1>校园信息管理平台</h1>
             <p></p>
         </header>
-        <br>
-        <br>
-        <br>
         <br>
         <br>
         <el-form :model="form" :rules="rules" ref="form" label-width="80px">

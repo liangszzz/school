@@ -49,7 +49,7 @@ public class SchoolStudent extends Request<SchoolStudent> implements Serializabl
     @Override
     public Example<SchoolStudent> getPageExample() {
         return Example.of(this,
-                ExampleMatcher.matching()
+                ExampleMatcher.matchingAny()
                         .withMatcher("name", matcher -> matcher.contains()));
     }
 }

@@ -27,7 +27,7 @@ public class SchoolYear extends Request<SchoolYear> implements Serializable {
     @Override
     public Example<SchoolYear> getPageExample() {
         return Example.of(this,
-                ExampleMatcher.matching()
+                ExampleMatcher.matchingAny()
                         .withMatcher("name", matcher -> matcher.contains()));
     }
 }

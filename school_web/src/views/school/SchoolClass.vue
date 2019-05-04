@@ -1,10 +1,16 @@
 <template>
     <div id="app">
         <el-row>
+            <el-breadcrumb separator="/" style="height: 40px;">
+                <el-breadcrumb-item>首页</el-breadcrumb-item>
+                <el-breadcrumb-item>班级管理</el-breadcrumb-item>
+            </el-breadcrumb>
+        </el-row>
+        <el-row>
             <el-col :span="6">
                 <el-form :model="queryForm" ref="queryForm" label-width="80px" :inline="true" style="width: 100%">
-                    <el-form-item label="用户名">
-                        <el-input v-model="queryForm.username" clearable></el-input>
+                    <el-form-item label="班级名称">
+                        <el-input v-model="queryForm.name" clearable></el-input>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -16,8 +22,7 @@
         </el-row>
         <el-row>
             <el-table :data="tableData" border style="width: 100%" stripe>
-                <el-table-column prop="username" label="用户名" width="120"/>
-                <el-table-column prop="name" label="姓名" width="120"/>
+                <el-table-column prop="name" label="学年名称"/>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button @click="toShow(scope.$index, scope.row)" type="text" size="small">查看</el-button>
@@ -44,14 +49,9 @@
             </div>
             <el-form :model="dialog.form" label-width="80px" :rules="dialog.rules" ref="dialog.form"
                      style="width: 50%;margin-left: 25%;margin-right: 25%;">
-                <el-form-item label="用户名" prop="username">
-                    <el-input v-model="dialog.form.username" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="姓名" prop="name">
+                <input v-model="dialog.form.id" type="hidden"></input>
+                <el-form-item label="学年名称" prop="name">
                     <el-input v-model="dialog.form.name" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="密码">
-                    新增用户的默认密码为default123456
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -72,7 +72,7 @@
         data() {
             return {
                 queryForm: {
-                    username: null,
+                    name: null,
                     page: 0,
                     size: 10,
                     total: 0,
@@ -83,15 +83,12 @@
                     title: "添加",
                     show: false,
                     form: {
-                        username: "",
+                        id: "",
                         name: "",
                     },
                     rules: {
-                        username: [
-                            {required: true, message: '请输入用户名', trigger: 'blur'},
-                            {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}],
                         name: [
-                            {required: true, message: '请输入用户姓名', trigger: 'blur'}],
+                            {required: true, message: '请输入名称', trigger: 'blur'}],
                     }
                 }
             }
@@ -110,7 +107,7 @@
             },
             searchForm(formName: string) {
                 let t = this;
-                Vue.axios.post("/user/list", t.$data[formName]).then(function (res) {
+                Vue.axios.post("/year/list", t.$data[formName]).then(function (res) {
                     if (res.data.code == 200) {
                         t.tableData = res.data.entity.content;
                         t.queryForm.page = res.data.entity.pageable.pageNumber
@@ -127,7 +124,7 @@
                 this.dialog.title = "添加";
                 this.dialog.saveType = 1;
                 this.dialog.form = {
-                    username: "",
+                    id: "",
                     name: "",
                 }
                 this.resetForm('dialog.form')
@@ -136,19 +133,19 @@
                 this.dialog.show = true;
                 this.dialog.saveType = 0;
                 this.dialog.title = "查看";
-                this.showDialogForm(row.username)
+                this.showDialogForm(row.id)
                 this.resetForm('dialog.form')
             },
             toUpdate(index: number, row: any) {
                 this.dialog.show = true;
                 this.dialog.saveType = 2;
                 this.dialog.title = "修改";
-                this.showDialogForm(row.username);
+                this.showDialogForm(row.id);
                 this.resetForm('dialog.form')
             },
             toDelete(index: number, row: any) {
                 let t = this;
-                Vue.axios.post("/user/deleteByUsername/" + row.username).then(function (res) {
+                Vue.axios.post("/year/deleteById/" + row.id).then(function (res) {
                     let data = res.data;
                     if (data.code == 200) {
                         t.$message({
@@ -160,13 +157,13 @@
                     }
                 })
             },
-            showDialogForm(username: string) {
+            showDialogForm(id: Number) {
                 let t = this;
-                Vue.axios.post("/user/findUserByUsername/" + username).then(function (res) {
+                Vue.axios.post("/year/findClassById/" + id).then(function (res) {
                     let data = res.data;
                     if (data.code == 200) {
                         t.dialog.form = {
-                            username: data.entity.username,
+                            id: data.entity.id,
                             name: data.entity.name,
                         }
                     }
@@ -176,9 +173,9 @@
                 let t = this;
                 let url
                 if (this.dialog.saveType === 1) {
-                    url = "/user/add";
+                    url = "/year/add";
                 } else if (t.dialog.saveType === 2) {
-                    url = "/user/update";
+                    url = "/year/update";
                 } else {
                     t.dialog.show = false;
                     return;

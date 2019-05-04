@@ -48,7 +48,10 @@ public class SchoolTeacher extends Request<SchoolTeacher> implements Serializabl
     @Override
     public Example<SchoolTeacher> getPageExample() {
         return Example.of(this,
-                ExampleMatcher.matching()
-                        .withMatcher("name", matcher -> matcher.contains()));
+                ExampleMatcher.matchingAny()
+                        .withMatcher("name", matcher -> matcher.contains())
+                        .withMatcher("workNo", matcher -> matcher.contains())
+                        .withMatcher("idCard", matcher -> matcher.contains())
+        );
     }
 }

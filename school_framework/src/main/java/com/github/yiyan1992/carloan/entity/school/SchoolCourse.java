@@ -40,7 +40,8 @@ public class SchoolCourse extends Request<SchoolCourse> implements Serializable 
     @Override
     public Example<SchoolCourse> getPageExample() {
         return Example.of(this,
-                ExampleMatcher.matching()
-                        .withMatcher("name", matcher -> matcher.contains()));
+                ExampleMatcher.matchingAny()
+                        .withMatcher("name", matcher -> matcher.contains())
+        );
     }
 }

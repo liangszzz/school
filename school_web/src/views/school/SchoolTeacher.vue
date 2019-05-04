@@ -1,23 +1,48 @@
 <template>
     <div id="app">
         <el-row>
-            <el-col :span="6">
-                <el-form :model="queryForm" ref="queryForm" label-width="80px" :inline="true" style="width: 100%">
-                    <el-form-item label="用户名">
-                        <el-input v-model="queryForm.username" clearable></el-input>
+            <el-breadcrumb separator="/" style="height: 40px;">
+                <el-breadcrumb-item>首页</el-breadcrumb-item>
+                <el-breadcrumb-item>教师管理</el-breadcrumb-item>
+            </el-breadcrumb>
+        </el-row>
+        <el-row>
+            <el-form :model="queryForm" ref="queryForm" label-width="110px">
+                <el-col :span="6">
+                    <el-form-item label="教师名称">
+                        <el-input v-model="queryForm.name"></el-input>
                     </el-form-item>
-                </el-form>
+                </el-col>
+                <el-col :span="6">
+                    <el-form-item label="教师工号">
+                        <el-input v-model="queryForm.workNo" clearable></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                    <el-form-item label="教师身份证号">
+                        <el-input v-model="queryForm.idCard" clearable></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                    &nbsp;
+                </el-col>
+            </el-form>
+        </el-row>
+        <el-row>
+            <el-col :span="16">
+                &nbsp;
+            </el-col>
+            <el-col :span="8">
+                <el-button @click="searchForm('queryForm')">查询</el-button>
+                <el-button @click="toAdd">添加</el-button>
             </el-col>
         </el-row>
         <el-row>
-            <el-button @click="searchForm('queryForm')">查询</el-button>
-            <el-button @click="resetForm('queryForm')">重置</el-button>
-            <el-button @click="toAdd">添加</el-button>
-        </el-row>
-        <el-row>
             <el-table :data="tableData" border style="width: 100%" stripe>
-                <el-table-column prop="username" label="用户名" width="120"/>
-                <el-table-column prop="name" label="姓名" width="120"/>
+                <el-table-column prop="name" label="教师名称"/>
+                <el-table-column prop="workNo" label="教师工号"/>
+                <el-table-column prop="idCard" label="教师身份证号"/>
+
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button @click="toShow(scope.$index, scope.row)" type="text" size="small">查看</el-button>
@@ -42,16 +67,17 @@
             <div slot="title" class="header-title">
                 <span> {{ dialog.title }}</span>
             </div>
-            <el-form :model="dialog.form" label-width="80px" :rules="dialog.rules" ref="dialog.form"
+            <el-form :model="dialog.form" label-width="110px" :rules="dialog.rules" ref="dialog.form"
                      style="width: 50%;margin-left: 25%;margin-right: 25%;">
-                <el-form-item label="用户名" prop="username">
-                    <el-input v-model="dialog.form.username" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="姓名" prop="name">
+                <input v-model="dialog.form.id" type="hidden"></input>
+                <el-form-item label="教师名称" prop="name">
                     <el-input v-model="dialog.form.name" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="密码">
-                    新增用户的默认密码为default123456
+                <el-form-item label="教师工号" prop="workNo">
+                    <el-input v-model="dialog.form.workNo" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="教师身份证号" prop="idCard">
+                    <el-input v-model="dialog.form.idCard" autocomplete="off"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -72,26 +98,29 @@
         data() {
             return {
                 queryForm: {
-                    username: null,
+                    name: null,
+                    workNo: null,
+                    idCard: null,
                     page: 0,
                     size: 10,
                     total: 0,
                 },
+                rules:{},
                 tableData: [],
                 dialog: {
                     saveType: 0,
                     title: "添加",
                     show: false,
                     form: {
-                        username: "",
+                        id: "",
                         name: "",
+                        workNo: "",
+                        idCard: "",
                     },
                     rules: {
-                        username: [
-                            {required: true, message: '请输入用户名', trigger: 'blur'},
-                            {min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur'}],
-                        name: [
-                            {required: true, message: '请输入用户姓名', trigger: 'blur'}],
+                        name: [{required: true, message: '请输入名称', trigger: 'blur'}],
+                        workNo: [{required: true, message: '请输入教师工号', trigger: 'blur'}],
+                        idCard: [{required: true, message: '教师身份证号', trigger: 'blur'}],
                     }
                 }
             }
@@ -110,7 +139,7 @@
             },
             searchForm(formName: string) {
                 let t = this;
-                Vue.axios.post("/user/list", t.$data[formName]).then(function (res) {
+                Vue.axios.post("/teacher/list", t.$data[formName]).then(function (res) {
                     if (res.data.code == 200) {
                         t.tableData = res.data.entity.content;
                         t.queryForm.page = res.data.entity.pageable.pageNumber
@@ -120,15 +149,19 @@
                 })
             },
             resetForm(formName: string) {
+                debugger
                 this.$refs[formName].resetFields();
+                this.searchForm('queryForm')
             },
             toAdd() {
                 this.dialog.show = true;
                 this.dialog.title = "添加";
                 this.dialog.saveType = 1;
                 this.dialog.form = {
-                    username: "",
+                    id: "",
                     name: "",
+                    workNo: "",
+                    idCard: "",
                 }
                 this.resetForm('dialog.form')
             },
@@ -136,19 +169,19 @@
                 this.dialog.show = true;
                 this.dialog.saveType = 0;
                 this.dialog.title = "查看";
-                this.showDialogForm(row.username)
+                this.showDialogForm(row.id)
                 this.resetForm('dialog.form')
             },
             toUpdate(index: number, row: any) {
                 this.dialog.show = true;
                 this.dialog.saveType = 2;
                 this.dialog.title = "修改";
-                this.showDialogForm(row.username);
+                this.showDialogForm(row.id);
                 this.resetForm('dialog.form')
             },
             toDelete(index: number, row: any) {
                 let t = this;
-                Vue.axios.post("/user/deleteByUsername/" + row.username).then(function (res) {
+                Vue.axios.post("/teacher/deleteById/" + row.id).then(function (res) {
                     let data = res.data;
                     if (data.code == 200) {
                         t.$message({
@@ -160,14 +193,16 @@
                     }
                 })
             },
-            showDialogForm(username: string) {
+            showDialogForm(id: Number) {
                 let t = this;
-                Vue.axios.post("/user/findUserByUsername/" + username).then(function (res) {
+                Vue.axios.post("/teacher/findClassById/" + id).then(function (res) {
                     let data = res.data;
                     if (data.code == 200) {
                         t.dialog.form = {
-                            username: data.entity.username,
+                            id: data.entity.id,
                             name: data.entity.name,
+                            workNo: data.entity.workNo,
+                            idCard: data.entity.idCard,
                         }
                     }
                 })
@@ -176,9 +211,9 @@
                 let t = this;
                 let url
                 if (this.dialog.saveType === 1) {
-                    url = "/user/add";
+                    url = "/teacher/add";
                 } else if (t.dialog.saveType === 2) {
-                    url = "/user/update";
+                    url = "/teacher/update";
                 } else {
                     t.dialog.show = false;
                     return;
@@ -205,6 +240,9 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-
+    .el-form {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
 </style>

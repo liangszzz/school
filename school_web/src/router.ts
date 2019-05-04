@@ -3,6 +3,14 @@ import Router from 'vue-router';
 import Login from './views/Login.vue';
 import Home from './views/Home.vue';
 import User from './views/sys/User.vue'
+import Role from './views/sys/Role.vue'
+import Menu from "@/views/sys/Menu.vue";
+import SchoolCourse from "@/views/school/SchoolCourse.vue";
+import SchoolClass from "@/views/school/SchoolClass.vue";
+import SchoolRoom from "@/views/school/SchoolRoom.vue";
+import SchoolStudent from "@/views/school/SchoolStudent.vue";
+import SchoolTeacher from "@/views/school/SchoolTeacher.vue";
+import SchoolYear from "@/views/school/SchoolYear.vue";
 
 Vue.use(Router);
 
@@ -29,6 +37,46 @@ export default new Router({
                     path: '/user',
                     name: 'user',
                     component: User,
+                },
+                {
+                    path: '/role',
+                    name: 'role',
+                    component: Role,
+                },
+                {
+                    path: '/menu',
+                    name: 'menu',
+                    component: Menu,
+                },
+                {
+                    path: '/class',
+                    name: 'class',
+                    component: SchoolClass,
+                },
+                {
+                    path: '/course',
+                    name: 'course',
+                    component: SchoolCourse,
+                },
+                {
+                    path: '/room',
+                    name: 'room',
+                    component: SchoolRoom,
+                },
+                {
+                    path: '/student',
+                    name: 'student',
+                    component: SchoolStudent,
+                },
+                {
+                    path: '/teacher',
+                    name: 'teacher',
+                    component: SchoolTeacher,
+                },
+                {
+                    path: '/year',
+                    name: 'year',
+                    component: SchoolYear,
                 },
             ]
         },

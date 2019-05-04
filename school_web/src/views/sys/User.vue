@@ -1,8 +1,14 @@
 <template>
     <div id="app">
         <el-row>
+            <el-breadcrumb separator="/" style="height: 40px;">
+                <el-breadcrumb-item>系统管理</el-breadcrumb-item>
+                <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+            </el-breadcrumb>
+        </el-row>
+        <el-row>
             <el-col :span="6">
-                <el-form :model="queryForm" ref="queryForm" label-width="80px" :inline="true" style="width: 100%">
+                <el-form :model="queryForm" ref="queryForm" label-width="80px">
                     <el-form-item label="用户名">
                         <el-input v-model="queryForm.username" clearable></el-input>
                     </el-form-item>
@@ -205,6 +211,9 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-
+    .el-form {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
 </style>

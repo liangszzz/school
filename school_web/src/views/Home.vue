@@ -32,19 +32,19 @@
                         <template slot="title">
                             <span>系统管理</span>
                         </template>
-                        <el-menu-item index="/user">
-                            管理员管理
-                        </el-menu-item>
+                        <el-menu-item index="/user">管理员管理</el-menu-item>
+                        <el-menu-item index="/role">角色管理</el-menu-item>
+                        <el-menu-item index="/role">菜单管理</el-menu-item>
                     </el-submenu>
                     <el-submenu index="2">
                         <template slot="title">
                             <span>学校管理</span>
                         </template>
-                        <el-menu-item>学年管理</el-menu-item>
-                        <el-menu-item>教室管理</el-menu-item>
-                        <el-menu-item>班级管理</el-menu-item>
-                        <el-menu-item>教师管理</el-menu-item>
-                        <el-menu-item>课程管理</el-menu-item>
+                        <el-menu-item index="/year">学年管理</el-menu-item>
+                        <el-menu-item index="/room">教室管理</el-menu-item>
+                        <el-menu-item index="/class">班级管理</el-menu-item>
+                        <el-menu-item index="/teacher">教师管理</el-menu-item>
+                        <el-menu-item index="/course">课程管理</el-menu-item>
                     </el-submenu>
                     <el-submenu index="3">
                         <template slot="title">
