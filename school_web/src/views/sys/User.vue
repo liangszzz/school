@@ -22,8 +22,8 @@
         </el-row>
         <el-row>
             <el-table :data="tableData" border style="width: 100%" stripe>
-                <el-table-column prop="username" label="用户名" width="120"/>
-                <el-table-column prop="name" label="姓名" width="120"/>
+                <el-table-column prop="username" label="用户名"/>
+                <el-table-column prop="name" label="姓名"/>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button @click="toShow(scope.$index, scope.row)" type="text" size="small">查看</el-button>
@@ -62,7 +62,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialog.show = false">取 消</el-button>
-                <el-button type="primary" @click="save">确 定</el-button>
+                <el-button type="primary" @click="validate">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -177,6 +177,15 @@
                         }
                     }
                 })
+            },
+            validate() {
+                this.$refs['dialog.form'].validate((valid:boolean) => {
+                    if (valid) {
+                        this.save()
+                    } else {
+                        return false;
+                    }
+                });
             },
             save() {
                 let t = this;

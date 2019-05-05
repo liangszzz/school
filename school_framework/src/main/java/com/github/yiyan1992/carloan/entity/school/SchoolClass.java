@@ -23,7 +23,7 @@ public class SchoolClass extends Request<SchoolClass> implements Serializable {
     @GeneratedValue
     private Integer id;
 
-    @Column(nullable = false, length = 80)
+    @Column(nullable = false, length = 80, unique = true)
     private String name;
 
     @OneToOne

@@ -7,6 +7,7 @@ import org.springframework.data.domain.ExampleMatcher;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author admin
@@ -18,20 +19,17 @@ public class Menu extends Request<Menu> implements Serializable {
 
     @Id
     @GeneratedValue
-    @Column(name = "id",length = 11)
-    private int id;
+    @Column(name = "id", length = 11)
+    private Integer id;
 
-    @Column(name = "menu_name", length = 50)
-    private String menuName;
+    @Column(name = "name", length = 50)
+    private String name;
 
     /**
      * 0 菜单 1:按钮
      */
-    @Column(name = "menu_type", length = 1)
-    private int menuType = 0;
-
-    @Column(name = "parent_id",length = 11)
-    private int parentId;
+    @Column(name = "type", length = 1)
+    private Integer type;
 
     @Column(name = "url", length = 50)
     private String url;
@@ -39,10 +37,23 @@ public class Menu extends Request<Menu> implements Serializable {
     @Column(name = "permission", length = 20)
     private String permission;
 
+    @OneToOne
+    private Menu menu;
+
+    @Transient
+    private boolean hasChildren;
+
+    @Transient
+    private int count;
+
     @Override
     public Example<Menu> getPageExample() {
         return Example.of(this,
                 ExampleMatcher.matching()
                         .withMatcher("menuName", matcher -> matcher.contains()));
+    }
+
+    public boolean isHasChildren() {
+        return count > 0;
     }
 }

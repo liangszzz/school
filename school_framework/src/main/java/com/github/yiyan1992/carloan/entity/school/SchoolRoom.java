@@ -20,7 +20,7 @@ public class SchoolRoom extends Request<SchoolRoom> implements Serializable {
     @GeneratedValue
     private Integer id;
 
-    @Column(nullable = false, length = 80)
+    @Column(nullable = false, length = 80,unique = true)
     private String name;
 
     @Override

@@ -26,8 +26,8 @@ public class StudentController {
         return Response.of(200, list);
     }
 
-    @PostMapping("/findClassById/{id}")
-    public Response findClassById(@PathVariable Integer id) {
+    @PostMapping("/findById/{id}")
+    public Response findById(@PathVariable Integer id) {
         Optional<SchoolStudent> optional = schoolStudentService.findById(id);
         return Response.SUCCESS(optional.get());
     }

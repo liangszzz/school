@@ -27,7 +27,7 @@ public class ClassController {
     }
 
     @PostMapping("/findById/{id}")
-    public Response findClassById(@PathVariable Integer id) {
+    public Response findById(@PathVariable Integer id) {
         Optional<SchoolClass> schoolClass = schoolClassService.findById(id);
         return Response.SUCCESS(schoolClass.get());
     }

@@ -57,7 +57,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialog.show = false">取 消</el-button>
-                <el-button type="primary" @click="save">确 定</el-button>
+                <el-button type="primary" @click="validate">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -170,6 +170,15 @@
                     }
                 })
             },
+            validate() {
+                this.$refs['dialog.form'].validate((valid:boolean) => {
+                    if (valid) {
+                        this.save()
+                    } else {
+                        return false;
+                    }
+                });
+            },
             save() {
                 let t = this;
                 let url
@@ -208,5 +217,4 @@
         margin-left: 0;
         margin-right: 0;
     }
-
 </style>

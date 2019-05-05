@@ -2,7 +2,7 @@
     <div id="app">
         <el-row>
             <el-breadcrumb separator="/" style="height: 40px;">
-                <el-breadcrumb-item>首页</el-breadcrumb-item>
+                <el-breadcrumb-item>校园管理</el-breadcrumb-item>
                 <el-breadcrumb-item>学年管理</el-breadcrumb-item>
             </el-breadcrumb>
         </el-row>
@@ -55,7 +55,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialog.show = false">取 消</el-button>
-                <el-button type="primary" @click="save">确 定</el-button>
+                <el-button type="primary" @click="validate">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -167,6 +167,15 @@
                         }
                     }
                 })
+            },
+            validate() {
+                this.$refs['dialog.form'].validate((valid:boolean) => {
+                    if (valid) {
+                        this.save()
+                    } else {
+                        return false;
+                    }
+                });
             },
             save() {
                 let t = this;

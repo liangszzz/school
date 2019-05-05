@@ -4,12 +4,12 @@ import com.github.yiyan1992.carloan.entity.response.Response;
 import com.github.yiyan1992.carloan.entity.sys.Menu;
 import com.github.yiyan1992.carloan.service.sys.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,8 +21,8 @@ public class MenuController {
 
 
     @PostMapping("/list")
-    public Response list(Menu menu) {
-        Page<Menu> list = menuService.findPageList(menu.getPageExample(), menu.getPageRequest());
+    public Response list() {
+        List<Menu> list = menuService.findList();
         return Response.of(200, list);
     }
 

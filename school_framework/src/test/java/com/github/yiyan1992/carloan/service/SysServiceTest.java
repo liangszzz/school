@@ -46,7 +46,7 @@ public class SysServiceTest {
         //插入菜单
         Menu menu = new Menu();
         menu.setId(1);
-        menu.setMenuName("userManage");
+        menu.setName("userManage");
         menu.setUrl("/userManage");
         menu.setPermission("user:query");
         menuService.save(menu);

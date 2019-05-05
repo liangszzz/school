@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,4 +32,9 @@ public class MenuService {
     public void deleteById(Integer id) {
         menuDao.deleteById(id);
     }
+
+    public List<Menu> findList() {
+        return menuDao.findParentList();
+    }
+
 }

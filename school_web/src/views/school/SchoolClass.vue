@@ -2,7 +2,7 @@
     <div id="app">
         <el-row>
             <el-breadcrumb separator="/" style="height: 40px;">
-                <el-breadcrumb-item>首页</el-breadcrumb-item>
+                <el-breadcrumb-item>校园管理</el-breadcrumb-item>
                 <el-breadcrumb-item>班级管理</el-breadcrumb-item>
             </el-breadcrumb>
         </el-row>
@@ -56,7 +56,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialog.show = false">取 消</el-button>
-                <el-button type="primary" @click="save">确 定</el-button>
+                <el-button type="primary" @click="validate">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -107,7 +107,7 @@
             },
             searchForm(formName: string) {
                 let t = this;
-                Vue.axios.post("/year/list", t.$data[formName]).then(function (res) {
+                Vue.axios.post("/class/list", t.$data[formName]).then(function (res) {
                     if (res.data.code == 200) {
                         t.tableData = res.data.entity.content;
                         t.queryForm.page = res.data.entity.pageable.pageNumber
@@ -145,7 +145,7 @@
             },
             toDelete(index: number, row: any) {
                 let t = this;
-                Vue.axios.post("/year/deleteById/" + row.id).then(function (res) {
+                Vue.axios.post("/class/deleteById/" + row.id).then(function (res) {
                     let data = res.data;
                     if (data.code == 200) {
                         t.$message({
@@ -159,7 +159,7 @@
             },
             showDialogForm(id: Number) {
                 let t = this;
-                Vue.axios.post("/year/findClassById/" + id).then(function (res) {
+                Vue.axios.post("/class/findById/" + id).then(function (res) {
                     let data = res.data;
                     if (data.code == 200) {
                         t.dialog.form = {
@@ -168,6 +168,15 @@
                         }
                     }
                 })
+            },
+            validate() {
+                this.$refs['dialog.form'].validate((valid:boolean) => {
+                    if (valid) {
+                        this.save()
+                    } else {
+                        return false;
+                    }
+                });
             },
             save() {
                 let t = this;
