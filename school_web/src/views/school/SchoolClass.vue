@@ -17,7 +17,6 @@
         </el-row>
         <el-row>
             <el-button @click="searchForm('queryForm')">查询</el-button>
-            <el-button @click="resetForm('queryForm')">重置</el-button>
             <el-button @click="toAdd">添加</el-button>
         </el-row>
         <el-row>
@@ -116,9 +115,6 @@
                     }
                 })
             },
-            resetForm(formName: string) {
-                this.$refs[formName].resetFields();
-            },
             toAdd() {
                 this.dialog.show = true;
                 this.dialog.title = "添加";
@@ -127,21 +123,18 @@
                     id: "",
                     name: "",
                 }
-                this.resetForm('dialog.form')
             },
             toShow(index: number, row: any) {
                 this.dialog.show = true;
                 this.dialog.saveType = 0;
                 this.dialog.title = "查看";
                 this.showDialogForm(row.id)
-                this.resetForm('dialog.form')
             },
             toUpdate(index: number, row: any) {
                 this.dialog.show = true;
                 this.dialog.saveType = 2;
                 this.dialog.title = "修改";
                 this.showDialogForm(row.id);
-                this.resetForm('dialog.form')
             },
             toDelete(index: number, row: any) {
                 let t = this;

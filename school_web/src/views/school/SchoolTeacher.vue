@@ -148,11 +148,6 @@
                     }
                 })
             },
-            resetForm(formName: string) {
-                debugger
-                this.$refs[formName].resetFields();
-                this.searchForm('queryForm')
-            },
             toAdd() {
                 this.dialog.show = true;
                 this.dialog.title = "添加";
@@ -163,21 +158,18 @@
                     workNo: "",
                     idCard: "",
                 }
-                this.resetForm('dialog.form')
             },
             toShow(index: number, row: any) {
                 this.dialog.show = true;
                 this.dialog.saveType = 0;
                 this.dialog.title = "查看";
                 this.showDialogForm(row.id)
-                this.resetForm('dialog.form')
             },
             toUpdate(index: number, row: any) {
                 this.dialog.show = true;
                 this.dialog.saveType = 2;
                 this.dialog.title = "修改";
                 this.showDialogForm(row.id);
-                this.resetForm('dialog.form')
             },
             toDelete(index: number, row: any) {
                 let t = this;

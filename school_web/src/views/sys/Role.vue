@@ -67,12 +67,13 @@
             <div slot="title" class="header-title">
                 <span> {{ menu.title }}</span>
             </div>
-            <el-tree :data="menu.data" :props="menu.props" node-key="id" :default-checked-keys="menu.selected"
-                     show-checkbox>
+            <el-tree :data="menu.data" :props="menu.props" node-key="id"
+                     default-expand-all
+                     show-checkbox ref="tree" check-strictly>
             </el-tree>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="menu.show = false">取 消</el-button>
-                <el-button type="primary">确 定</el-button>
+                <el-button type="primary" @click="saveRoleMenu">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -110,11 +111,11 @@
                     title: "添加",
                     show: false,
                     data: [],
-                    selected: [],
                     props: {
                         label: "name",
                         children: "children"
-                    }
+                    },
+                    currentRoleName: ""
                 },
             }
         },
@@ -132,6 +133,7 @@
                 return tree;
             },
             toUpdateMenu(index: number, row: any) {
+                this.menu.currentRoleName = row.roleName;
                 this.menu.show = true;
                 this.menu.title = "菜单";
                 //显示角色所有节点
@@ -145,13 +147,36 @@
                         t.menu.data = t.buildTree(data, tree);
                     }
                 });
-
                 Vue.axios.post("/menu/findRoleMenu/" + row.roleName).then(function (res) {
                     let data = res.data;
                     if (data.code == 200) {
-                        res.data.entity.menus.forEach(value => t.menu.selected.push(value.id));
+                        let arr = [];
+                        res.data.entity.forEach(value => arr.push(value.id));
+                        t.$refs.tree.setCheckedKeys(arr);
                     }
                 })
+            },
+            saveRoleMenu() {
+                let t = this;
+                let selected = this.$refs.tree.getCheckedKeys()
+                let roleName = this.menu.currentRoleName;
+                Vue.axios.post("/menu/saveRoleMenu", {
+                    roleName: roleName,
+                    menus: selected
+                }, {
+                    headers: {
+                        "content-type": "application/json",
+                    }
+                }).then(res => {
+                    if (res.data.code == 200) {
+                        t.$message({
+                            message: '保存成功!',
+                            type: 'success',
+                            showClose: true,
+                        });
+                        t.menu.show = false;
+                    }
+                });
             },
             handleSizeChange(val: number) {
                 this.queryForm.size = val;

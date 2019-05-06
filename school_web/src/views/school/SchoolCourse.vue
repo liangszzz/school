@@ -17,12 +17,14 @@
         </el-row>
         <el-row>
             <el-button @click="searchForm('queryForm')">查询</el-button>
-            <el-button @click="resetForm('queryForm')">重置</el-button>
             <el-button @click="toAdd">添加</el-button>
         </el-row>
         <el-row>
             <el-table :data="tableData" border style="width: 100%" stripe>
-                <el-table-column prop="name" label="学年名称"/>
+                <el-table-column prop="name" label="课程名称"/>
+                <el-table-column prop="score" label="学分"/>
+                <el-table-column prop="hour" label="课时"/>
+                <el-table-column prop="year.name" label="学年"/>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button @click="toShow(scope.$index, scope.row)" type="text" size="small">查看</el-button>
@@ -50,8 +52,14 @@
             <el-form :model="dialog.form" label-width="80px" :rules="dialog.rules" ref="dialog.form"
                      style="width: 50%;margin-left: 25%;margin-right: 25%;">
                 <input v-model="dialog.form.id" type="hidden"></input>
-                <el-form-item label="学年名称" prop="name">
+                <el-form-item label="课程名称" prop="name">
                     <el-input v-model="dialog.form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="学分" prop="score">
+                    <el-input v-model="dialog.form.score" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="学时" prop="hour">
+                    <el-input v-model="dialog.form.hour" autocomplete="off"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -107,7 +115,7 @@
             },
             searchForm(formName: string) {
                 let t = this;
-                Vue.axios.post("/year/list", t.$data[formName]).then(function (res) {
+                Vue.axios.post("/course/list", t.$data[formName]).then(function (res) {
                     if (res.data.code == 200) {
                         t.tableData = res.data.entity.content;
                         t.queryForm.page = res.data.entity.pageable.pageNumber
@@ -115,9 +123,6 @@
                         t.queryForm.total = res.data.entity.totalElements
                     }
                 })
-            },
-            resetForm(formName: string) {
-                this.$refs[formName].resetFields();
             },
             toAdd() {
                 this.dialog.show = true;
@@ -127,25 +132,22 @@
                     id: "",
                     name: "",
                 }
-                this.resetForm('dialog.form')
             },
             toShow(index: number, row: any) {
                 this.dialog.show = true;
                 this.dialog.saveType = 0;
                 this.dialog.title = "查看";
                 this.showDialogForm(row.id)
-                this.resetForm('dialog.form')
             },
             toUpdate(index: number, row: any) {
                 this.dialog.show = true;
                 this.dialog.saveType = 2;
                 this.dialog.title = "修改";
                 this.showDialogForm(row.id);
-                this.resetForm('dialog.form')
             },
             toDelete(index: number, row: any) {
                 let t = this;
-                Vue.axios.post("/year/deleteById/" + row.id).then(function (res) {
+                Vue.axios.post("/course/deleteById/" + row.id).then(function (res) {
                     let data = res.data;
                     if (data.code == 200) {
                         t.$message({
@@ -159,7 +161,7 @@
             },
             showDialogForm(id: Number) {
                 let t = this;
-                Vue.axios.post("/year/findClassById/" + id).then(function (res) {
+                Vue.axios.post("/course/findById/" + id).then(function (res) {
                     let data = res.data;
                     if (data.code == 200) {
                         t.dialog.form = {
@@ -182,9 +184,9 @@
                 let t = this;
                 let url
                 if (this.dialog.saveType === 1) {
-                    url = "/year/add";
+                    url = "/course/add";
                 } else if (t.dialog.saveType === 2) {
-                    url = "/year/update";
+                    url = "/course/update";
                 } else {
                     t.dialog.show = false;
                     return;

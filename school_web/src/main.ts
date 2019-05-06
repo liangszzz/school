@@ -16,7 +16,9 @@ Vue.axios.defaults.headers = {
 
 Vue.axios.defaults.transformRequest = [function (data, headers) {
     if (headers['content-type'] == 'application/x-www-form-urlencoded') {
-        return Qs.stringify(data);
+        return Qs.stringify(data, {arrayFormat: 'brackets'})
+    } else if (headers['content-type'] == 'application/json') {
+        return JSON.stringify(data);
     }
     return data;
 },]
@@ -40,10 +42,6 @@ axios.interceptors.response.use(function (response) {
     // Do something with response error
     return Promise.reject(error);
 });
-
-Vue.axios.defaults.paramsSerializer = function (params: any) {
-    return Qs.stringify(params, {arrayFormat: 'brackets'})
-}
 
 
 // Vue.prototype.checkPermission = function (permission){

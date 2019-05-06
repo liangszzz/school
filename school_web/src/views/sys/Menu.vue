@@ -42,10 +42,11 @@
                 <el-form-item label="权限" prop="permission">
                     <el-input v-model="dialog.form.permission" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="类型" prop="type">
-                    <el-input v-model="dialog.form.type" autocomplete="off"></el-input>
+                <el-form-item label="类型">
+                    <el-switch active-text="菜单" inactive-text="按钮" v-model="dialog.form.type" active-value="0"
+                               inactive-value="1">
+                    </el-switch>
                 </el-form-item>
-
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialog.show = false">取 消</el-button>
@@ -71,7 +72,7 @@
                         name: "",
                         url: "",
                         permission: "",
-                        type: "",
+                        type: 0,
                         "menu.id": null,
                     },
                     rules: {
@@ -111,12 +112,10 @@
                     name: "",
                     url: "",
                     permission: "",
-                    type: "",
-                    "menu.id": null,
+                    type: 0
                 }
             },
             toAddChild(index: any, row: any) {
-                debugger
                 this.dialog.show = true;
                 this.dialog.title = "添加";
                 this.dialog.saveType = 1;
@@ -125,7 +124,7 @@
                     name: "",
                     url: "",
                     permission: "",
-                    type: "",
+                    type: 0,
                     "menu.id": row.id,
                 }
             },

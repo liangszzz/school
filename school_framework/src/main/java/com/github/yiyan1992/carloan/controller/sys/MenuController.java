@@ -1,13 +1,11 @@
 package com.github.yiyan1992.carloan.controller.sys;
 
+import com.github.yiyan1992.carloan.entity.query.RoleMenu;
 import com.github.yiyan1992.carloan.entity.response.Response;
 import com.github.yiyan1992.carloan.entity.sys.Menu;
 import com.github.yiyan1992.carloan.service.sys.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -53,6 +51,12 @@ public class MenuController {
     @PostMapping("/update")
     public Response update(Menu menu) {
         return Response.of(200, menuService.save(menu));
+    }
+
+    @PostMapping("/saveRoleMenu")
+    public Response saveRoleMenu(@RequestBody RoleMenu roleMenu) {
+
+        return menuService.saveRoleMenu(roleMenu);
     }
 
     @PostMapping("/deleteById/{id}")
