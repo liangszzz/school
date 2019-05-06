@@ -11,11 +11,10 @@
             <el-button @click="toAdd">添加</el-button>
         </el-row>
         <el-row>
-            <el-table :data="tableData" border row-key="id" lazy>
+            <el-table :data="tableData" border row-key="id" lazy :load="loadChildren">
                 <el-table-column prop="name" label="名称"></el-table-column>
                 <el-table-column prop="url" label="链接"></el-table-column>
                 <el-table-column prop="permission" label="权限"></el-table-column>
-                <el-table-column prop="type" label="类型"></el-table-column>
                 <el-table-column prop="type" label="类型"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
@@ -86,9 +85,7 @@
         },
         methods: {
             flushPage() {
-                this.search({
-
-                });
+                this.search({});
             },
             search(data: any) {
                 let t = this;
@@ -98,8 +95,12 @@
                     }
                 })
             },
-            resetForm(formName: string) {
-                this.$refs[formName].resetFields();
+            loadChildren(tree: any, treeNode: any, resolve: any) {
+                Vue.axios.post("/menu/loadChildren/" + treeNode.rowKey, {}).then(res => {
+                    if (res.data.code == 200) {
+                        resolve(res.data.entity)
+                    }
+                });
             },
             toAdd() {
                 this.dialog.show = true;
@@ -113,9 +114,9 @@
                     type: "",
                     "menu.id": null,
                 }
-                this.resetForm('dialog.form')
             },
             toAddChild(index: any, row: any) {
+                debugger
                 this.dialog.show = true;
                 this.dialog.title = "添加";
                 this.dialog.saveType = 1;
@@ -127,21 +128,12 @@
                     type: "",
                     "menu.id": row.id,
                 }
-                this.resetForm('dialog.form')
-            },
-            toShow(index: number, row: any) {
-                this.dialog.show = true;
-                this.dialog.saveType = 0;
-                this.dialog.title = "查看";
-                this.showDialogForm(row.id)
-                this.resetForm('dialog.form')
             },
             toUpdate(index: number, row: any) {
                 this.dialog.show = true;
                 this.dialog.saveType = 2;
                 this.dialog.title = "修改";
                 this.showDialogForm(row.id);
-                this.resetForm('dialog.form')
             },
             toDelete(index: number, row: any) {
                 let t = this;
@@ -162,14 +154,25 @@
                 Vue.axios.post("/menu/findById/" + id).then(function (res) {
                     let data = res.data;
                     if (data.code == 200) {
-                        t.dialog.form = {
-                            id: data.entity.id,
-                            name: data.entity.name,
-                            url: data.entity.url,
-                            permission: data.entity.permission,
-                            type: data.entity.type,
-                            "menu.id": data.entity.menu.id,
+                        if (data.entity.menu != null) {
+                            t.dialog.form = {
+                                id: data.entity.id,
+                                name: data.entity.name,
+                                url: data.entity.url,
+                                permission: data.entity.permission,
+                                type: data.entity.type,
+                                "menu.id": data.entity.menu.id,
+                            }
+                        } else {
+                            t.dialog.form = {
+                                id: data.entity.id,
+                                name: data.entity.name,
+                                url: data.entity.url,
+                                permission: data.entity.permission,
+                                type: data.entity.type,
+                            }
                         }
+
                     }
                 })
             },
@@ -184,7 +187,7 @@
             },
             save() {
                 let t = this;
-                let url
+                let url;
                 if (this.dialog.saveType === 1) {
                     url = "/menu/add";
                 } else if (t.dialog.saveType === 2) {

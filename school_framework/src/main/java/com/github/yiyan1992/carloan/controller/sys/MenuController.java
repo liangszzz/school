@@ -22,14 +22,18 @@ public class MenuController {
 
     @PostMapping("/list")
     public Response list() {
-        List<Menu> list = menuService.findList();
-        return Response.of(200, list);
+        return Response.of(200, menuService.findList());
+    }
+
+    @PostMapping("/loadChildren/{id}")
+    public Response loadChildren(@PathVariable Integer id) {
+        return Response.of(200, menuService.findChildrenList(id));
     }
 
     @PostMapping("/findById/{id}")
     public Response findClassById(@PathVariable Integer id) {
-        Optional<Menu> schoolClass = menuService.findById(id);
-        return Response.SUCCESS(schoolClass.get());
+        Optional<Menu> menu = menuService.findById(id);
+        return Response.SUCCESS(menu.get());
     }
 
     @PostMapping("/add")

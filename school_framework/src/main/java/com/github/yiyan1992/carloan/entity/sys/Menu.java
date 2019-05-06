@@ -2,6 +2,7 @@ package com.github.yiyan1992.carloan.entity.sys;
 
 import com.github.yiyan1992.carloan.entity.request.Request;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 
@@ -12,10 +13,32 @@ import java.util.List;
 /**
  * @author admin
  */
+@SqlResultSetMapping(name = "menus", classes = {@ConstructorResult(targetClass = Menu.class,
+        columns = {
+                @ColumnResult(name = "id"),
+                @ColumnResult(name = "name"),
+                @ColumnResult(name = "type"),
+                @ColumnResult(name = "url"),
+                @ColumnResult(name = "permission"),
+                @ColumnResult(name = "count", type = Integer.class)
+        }
+)})
+@NamedNativeQuery(name = "Menu.findParentList", query = "SELECT m.*, ( SELECT count(1) FROM s_menu WHERE menu_id = m.id ) `count` FROM s_menu m WHERE ISNULL(m.menu_id)", resultSetMapping = "menus")
+@NamedNativeQuery(name = "Menu.findChildrenList", query = "SELECT m.*,(SELECT count( 1 ) FROM s_menu WHERE menu_id = m.id ) as `count` FROM s_menu m WHERE m.menu_id=:id", resultSetMapping = "menus")
 @Data
 @Entity
 @Table(name = "s_menu")
+@NoArgsConstructor
 public class Menu extends Request<Menu> implements Serializable {
+
+    public Menu(Integer id, String name, Integer type, String url, String permission, Integer count) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.url = url;
+        this.permission = permission;
+        this.count = count;
+    }
 
     @Id
     @GeneratedValue

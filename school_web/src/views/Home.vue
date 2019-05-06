@@ -21,13 +21,7 @@
         </el-row>
         <el-row class="home-body">
             <el-col :span="4">
-                <el-menu router
-                         default-active="1"
-                         menu-trigger="click"
-                         class="el-menu-vertical-demo"
-                         background-color="#545c64"
-                         text-color="#fff"
-                         active-text-color="#ffd04b">
+                <el-menu router default-active="1" menu-trigger="click" class="el-menu-vertical-demo">
                     <el-submenu index="1">
                         <template slot="title">
                             <span>系统管理</span>

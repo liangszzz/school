@@ -37,4 +37,8 @@ public class MenuService {
         return menuDao.findParentList();
     }
 
+    public List<Menu> findChildrenList(Integer id) {
+        return menuDao.findChildrenList(id);
+    }
+
 }
