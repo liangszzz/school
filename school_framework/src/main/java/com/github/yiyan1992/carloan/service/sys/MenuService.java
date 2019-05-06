@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
@@ -41,4 +43,11 @@ public class MenuService {
         return menuDao.findChildrenList(id);
     }
 
+    public List<Menu> findAll() {
+        return menuDao.findAll();
+    }
+
+    public Set<Menu> findMenuByRole(String roleName) {
+        return menuDao.findMenuByRole(roleName);
+    }
 }

@@ -29,7 +29,7 @@ public class CourseController {
     @PostMapping("/findById/{id}")
     public Response findById(@PathVariable Integer id) {
         Optional<SchoolCourse> optional = schoolCourseService.findById(id);
-        return Response.SUCCESS(optional.get());
+        return Response.success(optional.get());
     }
 
     @PostMapping("/add")
@@ -45,6 +45,6 @@ public class CourseController {
     @PostMapping("/deleteById/{id}")
     public Response delete(@PathVariable Integer id) {
         schoolCourseService.deleteById(id);
-        return Response.SUCCESS("");
+        return Response.success("");
     }
 }

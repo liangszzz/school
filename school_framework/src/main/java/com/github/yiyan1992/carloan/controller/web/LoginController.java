@@ -22,7 +22,7 @@ public class LoginController {
     @RequiresAuthentication
     @GetMapping(value = "/")
     public Response checkLogin() {
-        return Response.SUCCESS("");
+        return Response.success("");
     }
 
     /**
@@ -36,6 +36,6 @@ public class LoginController {
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(login.getUsername(), login.getPassword());
         subject.login(token);
-        return Response.SUCCESS(subject.getSession().getId());
+        return Response.success(subject.getSession().getId());
     }
 }

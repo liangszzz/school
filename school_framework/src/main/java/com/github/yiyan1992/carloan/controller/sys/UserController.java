@@ -40,14 +40,14 @@ public class UserController {
     @PostMapping("/findUserByUsername/{username}")
     public Response findUserByUsername(@PathVariable String username) {
         Optional<User> user = userService.findUserByName(username);
-        return Response.SUCCESS(user.get());
+        return Response.success(user.get());
     }
 
     @RequiresAuthentication
     @PostMapping("/updatePwd")
     public Response updatePwd(@RequestParam String password, @RequestParam String password2) {
         if (password.equals(password2)) {
-            return Response.SUCCESS("密码保存成功!");
+            return Response.success("密码保存成功!");
         }
         Subject subject = SecurityUtils.getSubject();
         String username = (String) subject.getPrincipals().getPrimaryPrincipal();
@@ -56,7 +56,7 @@ public class UserController {
             if (password2.equals(user.get().getPassword())) {
                 user.get().setPassword(password2);
                 userService.save(user.get());
-                return Response.SUCCESS("密码保存成功!");
+                return Response.success("密码保存成功!");
             }
             return Response.of(500, "保存失败!");
         }
@@ -82,6 +82,6 @@ public class UserController {
     @PostMapping("/deleteByUsername/{username}")
     public Response delete(@PathVariable String username) {
         userService.deleteByUsername(username);
-        return Response.SUCCESS("");
+        return Response.success("");
     }
 }

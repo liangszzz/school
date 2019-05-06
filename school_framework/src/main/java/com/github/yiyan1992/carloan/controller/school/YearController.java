@@ -29,7 +29,7 @@ public class YearController {
     @PostMapping("/findById/{id}")
     public Response findById(@PathVariable Integer id) {
         Optional<SchoolYear> optional = schoolYearService.findById(id);
-        return Response.SUCCESS(optional.get());
+        return Response.success(optional.get());
     }
 
     @PostMapping("/add")
@@ -45,6 +45,6 @@ public class YearController {
     @PostMapping("/deleteById/{id}")
     public Response delete(@PathVariable Integer id) {
         schoolYearService.deleteById(id);
-        return Response.SUCCESS("");
+        return Response.success("");
     }
 }

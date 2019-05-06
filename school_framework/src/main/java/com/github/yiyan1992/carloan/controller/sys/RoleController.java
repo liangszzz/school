@@ -28,8 +28,11 @@ public class RoleController {
 
     @PostMapping("/findById/{roleName}")
     public Response findClassById(@PathVariable String roleName) {
-        Optional<Role> schoolClass = roleService.findById(roleName);
-        return Response.SUCCESS(schoolClass.get());
+        Optional<Role> role = roleService.findById(roleName);
+        if (role.isPresent()) {
+            return Response.success(role.get());
+        }
+        return Response.of(500, "角色不存在");
     }
 
     @PostMapping("/add")
@@ -45,6 +48,6 @@ public class RoleController {
     @PostMapping("/deleteById/{roleName}")
     public Response delete(@PathVariable String roleName) {
         roleService.deleteById(roleName);
-        return Response.SUCCESS("");
+        return Response.success("");
     }
 }

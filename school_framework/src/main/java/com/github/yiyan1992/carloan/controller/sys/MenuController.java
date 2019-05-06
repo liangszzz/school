@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,10 +29,20 @@ public class MenuController {
         return Response.of(200, menuService.findChildrenList(id));
     }
 
+    @PostMapping("/findRoleMenu/{roleName}")
+    public Response findRoleMenu(@PathVariable String roleName) {
+        return Response.success(menuService.findMenuByRole(roleName));
+    }
+
+    @PostMapping("/findAll")
+    public Response findAll() {
+        return Response.success(menuService.findAll());
+    }
+
     @PostMapping("/findById/{id}")
     public Response findClassById(@PathVariable Integer id) {
         Optional<Menu> menu = menuService.findById(id);
-        return Response.SUCCESS(menu.get());
+        return Response.success(menu.get());
     }
 
     @PostMapping("/add")
@@ -49,6 +58,6 @@ public class MenuController {
     @PostMapping("/deleteById/{id}")
     public Response delete(@PathVariable Integer id) {
         menuService.deleteById(id);
-        return Response.SUCCESS("");
+        return Response.success("");
     }
 }
