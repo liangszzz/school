@@ -7,13 +7,16 @@
             </el-breadcrumb>
         </el-row>
         <el-row>
-            <el-col :span="6">
-                <el-form :model="queryForm" ref="queryForm" label-width="80px" :inline="true" style="width: 100%">
+            <el-form :model="queryForm" ref="queryForm" label-width="110px">
+                <el-col :span="6">
                     <el-form-item label="名称">
                         <el-input v-model="queryForm.name" clearable></el-input>
                     </el-form-item>
-                </el-form>
-            </el-col>
+                    <el-form-item label="学年">
+                        <el-input v-model="queryForm.name" clearable></el-input>
+                    </el-form-item>
+                </el-col>
+            </el-form>
         </el-row>
         <el-row>
             <el-button @click="searchForm('queryForm')">查询</el-button>
@@ -172,7 +175,7 @@
                 })
             },
             validate() {
-                this.$refs['dialog.form'].validate((valid:boolean) => {
+                this.$refs['dialog.form'].validate((valid: boolean) => {
                     if (valid) {
                         this.save()
                     } else {
@@ -213,6 +216,10 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+    .el-form {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
 
 </style>
