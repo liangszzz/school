@@ -38,19 +38,19 @@
                         <el-menu-item index="/course">课程管理</el-menu-item>
                         <el-menu-item index="/class">班级管理</el-menu-item>
                         <el-menu-item index="/teacher">教师管理</el-menu-item>
+                        <el-menu-item index="/student">学生管理</el-menu-item>
                     </el-submenu>
                     <el-submenu index="3">
                         <template slot="title">
-                            <span>学生管理</span>
+                            <span>教师信息</span>
                         </template>
-                        <el-menu-item>学生入学</el-menu-item>
-                        <el-menu-item>学生调班</el-menu-item>
-                        <el-menu-item>学生退学</el-menu-item>
+                        <el-menu-item>教师改分</el-menu-item>
                     </el-submenu>
                     <el-submenu index="4">
                         <template slot="title">
                             <span>学生信息</span>
                         </template>
+                        <el-menu-item>我的课程</el-menu-item>
                         <el-menu-item>学生选课</el-menu-item>
                     </el-submenu>
                 </el-menu>

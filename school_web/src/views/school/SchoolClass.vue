@@ -37,6 +37,7 @@
                         <el-button @click="toShow(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                         <el-button @click="toUpdate(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
                         <el-button @click="toCourse(scope.$index, scope.row)" type="text" size="small">课程</el-button>
+                        <el-button @click="toCourseTeacher(scope.$index, scope.row)" type="text" size="small">课程老师</el-button>
                         <el-button @click.prevent="toDelete(scope.$index, scope.row)" type="text" size="small">删除
                         </el-button>
                     </template>
@@ -198,7 +199,7 @@
                 let t = this;
                 t.courseDialog.currentClass = row.id;
                 t.courseDialog.show = true;
-                t.courseDialog.title = "选择教师";
+                t.courseDialog.title = "选择课程";
 
                 Vue.axios.post("/course/allByYear/", {
                     id: row.schoolYear.id

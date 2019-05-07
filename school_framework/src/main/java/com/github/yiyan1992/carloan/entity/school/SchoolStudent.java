@@ -40,12 +40,6 @@ public class SchoolStudent extends Request<SchoolStudent> implements Serializabl
     @OneToOne
     private SchoolYear schoolYear;
 
-    @ManyToMany
-    @JoinTable(name = "school_student_course",
-            joinColumns = {@JoinColumn(name = "student_id")},
-            inverseJoinColumns = {@JoinColumn(name = "course_id")})
-    private Set<SchoolCourse> courses;
-
     @Override
     public Example<SchoolStudent> getExample() {
         return Example.of(this,
