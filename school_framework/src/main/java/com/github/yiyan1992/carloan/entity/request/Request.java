@@ -18,7 +18,7 @@ public abstract class Request<T> {
     private int size = 10;
 
     @JsonIgnore
-    public abstract Example<T> getPageExample();
+    public abstract Example<T> getExample();
 
     @JsonIgnore
     public PageRequest getPageRequest() {

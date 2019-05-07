@@ -7,6 +7,7 @@ import org.springframework.data.domain.ExampleMatcher;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * 课程
@@ -20,7 +21,7 @@ public class SchoolCourse extends Request<SchoolCourse> implements Serializable 
     @GeneratedValue
     private Integer id;
 
-    @Column(nullable = false,length = 80)
+    @Column(nullable = false, length = 80)
     private String name;
     /**
      * 学分
@@ -37,8 +38,17 @@ public class SchoolCourse extends Request<SchoolCourse> implements Serializable 
     @OneToOne
     private SchoolYear schoolYear;
 
+    /**
+     * 一位教师可以教授多门课
+     */
+    @ManyToMany
+    @JoinTable(name = "school_course_teacher",
+            joinColumns = {@JoinColumn(name = "course_id")},
+            inverseJoinColumns = {@JoinColumn(name = "teacher_id")})
+    private Set<SchoolTeacher> schoolTeachers;
+
     @Override
-    public Example<SchoolCourse> getPageExample() {
+    public Example<SchoolCourse> getExample() {
         return Example.of(this,
                 ExampleMatcher.matching()
                         .withMatcher("name", matcher -> matcher.contains())

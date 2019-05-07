@@ -51,7 +51,7 @@ public class User extends Request<User> implements Serializable {
     private Set<Role> roles;
 
     @Override
-    public Example<User> getPageExample() {
+    public Example<User> getExample() {
         if (StringUtils.isEmpty(username)) {
             Example<User> userExample = Example.of(this, ExampleMatcher.matching().withIgnorePaths("username"));
             return userExample;

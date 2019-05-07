@@ -30,12 +30,6 @@ public class SchoolClass extends Request<SchoolClass> implements Serializable {
     private SchoolYear schoolYear;
 
     /**
-     * 固定教室
-     */
-    @OneToOne
-    private SchoolRoom schoolRoom;
-
-    /**
      * 班级课程
      */
     @ManyToMany
@@ -54,9 +48,9 @@ public class SchoolClass extends Request<SchoolClass> implements Serializable {
     private Set<SchoolStudent> students;
 
     @Override
-    public Example<SchoolClass> getPageExample() {
+    public Example<SchoolClass> getExample() {
         return Example.of(this,
-                ExampleMatcher.matchingAny()
+                ExampleMatcher.matching()
                         .withMatcher("name", matcher -> matcher.contains()));
     }
 }

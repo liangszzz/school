@@ -59,11 +59,6 @@ export default new Router({
                     component: SchoolCourse,
                 },
                 {
-                    path: '/room',
-                    name: 'room',
-                    component: SchoolRoom,
-                },
-                {
                     path: '/student',
                     name: 'student',
                     component: SchoolStudent,

@@ -74,7 +74,7 @@ public class Menu extends Request<Menu> implements Serializable {
     private int count;
 
     @Override
-    public Example<Menu> getPageExample() {
+    public Example<Menu> getExample() {
         return Example.of(this,
                 ExampleMatcher.matching()
                         .withMatcher("menuName", matcher -> matcher.contains()));

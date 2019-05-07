@@ -47,9 +47,9 @@ public class SchoolStudent extends Request<SchoolStudent> implements Serializabl
     private Set<SchoolCourse> courses;
 
     @Override
-    public Example<SchoolStudent> getPageExample() {
+    public Example<SchoolStudent> getExample() {
         return Example.of(this,
-                ExampleMatcher.matchingAny()
+                ExampleMatcher.matching()
                         .withMatcher("name", matcher -> matcher.contains()));
     }
 }

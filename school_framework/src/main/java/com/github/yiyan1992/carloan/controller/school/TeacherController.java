@@ -22,9 +22,15 @@ public class TeacherController {
 
     @PostMapping("/list")
     public Response list(SchoolTeacher schoolTeacher) {
-        Page<SchoolTeacher> list = schoolTeacherService.findPageList(schoolTeacher.getPageExample(), schoolTeacher.getPageRequest());
+        Page<SchoolTeacher> list = schoolTeacherService.findPageList(schoolTeacher.getExample(), schoolTeacher.getPageRequest());
         return Response.of(200, list);
     }
+
+    @PostMapping("/all")
+    public Response all() {
+        return Response.success(schoolTeacherService.findAll());
+    }
+
 
     @PostMapping("/findById/{id}")
     public Response findById(@PathVariable Integer id) {

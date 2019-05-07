@@ -14,13 +14,12 @@
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                    <el-form-item label="班级名称">
-                        <el-input v-model="queryForm.name" clearable></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item label="班级名称">
-                        <el-input v-model="queryForm.name" clearable></el-input>
+                    <el-form-item label="学年">
+                        <el-select v-model="queryForm['schoolYear.id']" filterable clearable placeholder="请输入关键词">
+                            <el-option v-for="item in formSelect.options" :key="item.id" :label="item.name"
+                                       :value="item.id">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-form>
@@ -31,11 +30,13 @@
         </el-row>
         <el-row>
             <el-table :data="tableData" border style="width: 100%" stripe>
-                <el-table-column prop="name" label="学年名称"/>
+                <el-table-column prop="name" label="班级名称"/>
+                <el-table-column prop="schoolYear.name" label="学年名称"/>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button @click="toShow(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                         <el-button @click="toUpdate(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
+                        <el-button @click="toCourse(scope.$index, scope.row)" type="text" size="small">课程</el-button>
                         <el-button @click.prevent="toDelete(scope.$index, scope.row)" type="text" size="small">删除
                         </el-button>
                     </template>
@@ -59,8 +60,15 @@
             <el-form :model="dialog.form" label-width="80px" :rules="dialog.rules" ref="dialog.form"
                      style="width: 50%;margin-left: 25%;margin-right: 25%;">
                 <input v-model="dialog.form.id" type="hidden"></input>
-                <el-form-item label="学年名称" prop="name">
+                <el-form-item label="名称" prop="name">
                     <el-input v-model="dialog.form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="学年" prop="schoolYear">
+                    <el-select v-model="dialog.form.schoolYear" filterable clearable placeholder="请输入关键词">
+                        <el-option v-for="item in formSelect.options" :key="item.id" :label="item.name"
+                                   :value="item.id">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -82,9 +90,13 @@
             return {
                 queryForm: {
                     name: null,
+                    "schoolYear.id": "",
                     page: 0,
                     size: 10,
                     total: 0,
+                },
+                formSelect: {
+                    options: []
                 },
                 tableData: [],
                 dialog: {
@@ -94,6 +106,7 @@
                     form: {
                         id: "",
                         name: "",
+                        schoolYear: "",
                     },
                     rules: {
                         name: [
@@ -104,8 +117,17 @@
         },
         created() {
             this.searchForm("queryForm");
+            this.loadQueryFormSelect();
         },
         methods: {
+            loadQueryFormSelect() {
+                let t = this;
+                Vue.axios.post("year/all").then(res => {
+                    if (res.data.code == 200) {
+                        t.formSelect.options = res.data.entity;
+                    }
+                });
+            },
             handleSizeChange(val: number) {
                 this.queryForm.size = val;
                 this.searchForm('queryForm');
@@ -132,6 +154,7 @@
                 this.dialog.form = {
                     id: "",
                     name: "",
+                    schoolYear: "",
                 }
             },
             toShow(index: number, row: any) {
@@ -145,6 +168,9 @@
                 this.dialog.saveType = 2;
                 this.dialog.title = "修改";
                 this.showDialogForm(row.id);
+            },
+            toCourse(index: number, row: any) {
+
             },
             toDelete(index: number, row: any) {
                 let t = this;
@@ -168,6 +194,7 @@
                         t.dialog.form = {
                             id: data.entity.id,
                             name: data.entity.name,
+                            schoolYear: data.entity.schoolYear.id,
                         }
                     }
                 })
@@ -185,9 +212,9 @@
                 let t = this;
                 let url
                 if (this.dialog.saveType === 1) {
-                    url = "/year/add";
+                    url = "/class/add";
                 } else if (t.dialog.saveType === 2) {
-                    url = "/year/update";
+                    url = "/class/update";
                 } else {
                     t.dialog.show = false;
                     return;
@@ -220,4 +247,7 @@
         margin-right: 0;
     }
 
+    .el-select {
+        width: 100%;
+    }
 </style>

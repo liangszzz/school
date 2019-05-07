@@ -33,7 +33,7 @@ public class UserController {
 
     @PostMapping("/list")
     public Response list(User user) {
-        Page<User> listByUser = userService.findListByUser(user.getPageExample(), user.getPageRequest());
+        Page<User> listByUser = userService.findListByUser(user.getExample(), user.getPageRequest());
         return Response.of(200, listByUser);
     }
 

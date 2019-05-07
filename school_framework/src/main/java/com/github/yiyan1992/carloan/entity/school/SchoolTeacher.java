@@ -36,19 +36,11 @@ public class SchoolTeacher extends Request<SchoolTeacher> implements Serializabl
     @Column(length = 50)
     private String password;
 
-    /**
-     * 一位教师可以教授多门课
-     */
-    @ManyToMany
-    @JoinTable(name = "school_teacher_course",
-            joinColumns = {@JoinColumn(name = "teacher_id")},
-            inverseJoinColumns = {@JoinColumn(name = "course_id")})
-    private Set<SchoolCourse> schoolCourse;
 
     @Override
-    public Example<SchoolTeacher> getPageExample() {
+    public Example<SchoolTeacher> getExample() {
         return Example.of(this,
-                ExampleMatcher.matchingAny()
+                ExampleMatcher.matching()
                         .withMatcher("name", matcher -> matcher.contains())
                         .withMatcher("workNo", matcher -> matcher.contains())
                         .withMatcher("idCard", matcher -> matcher.contains())

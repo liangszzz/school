@@ -22,7 +22,7 @@ public class YearController {
 
     @PostMapping("/list")
     public Response list(SchoolYear schoolYear) {
-        Page<SchoolYear> list = schoolYearService.findPageList(schoolYear.getPageExample(), schoolYear.getPageRequest());
+        Page<SchoolYear> list = schoolYearService.findPageList(schoolYear.getExample(), schoolYear.getPageRequest());
         return Response.of(200, list);
     }
 

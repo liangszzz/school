@@ -1,14 +1,13 @@
 package com.github.yiyan1992.carloan.controller.school;
 
+import com.github.yiyan1992.carloan.entity.query.CourseTeacher;
 import com.github.yiyan1992.carloan.entity.response.Response;
 import com.github.yiyan1992.carloan.entity.school.SchoolCourse;
+import com.github.yiyan1992.carloan.entity.school.SchoolYear;
 import com.github.yiyan1992.carloan.service.school.SchoolCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -21,8 +20,13 @@ public class CourseController {
 
     @PostMapping("/list")
     public Response list(SchoolCourse schoolCourse) {
-        Page<SchoolCourse> list = schoolCourseService.findPageList(schoolCourse.getPageExample(), schoolCourse.getPageRequest());
+        Page<SchoolCourse> list = schoolCourseService.findPageList(schoolCourse.getExample(), schoolCourse.getPageRequest());
         return Response.of(200, list);
+    }
+
+    @PostMapping("/allByYear")
+    public Response allByYear(SchoolYear schoolYear) {
+        return Response.success(schoolCourseService.findAllByYear(schoolYear));
     }
 
     @PostMapping("/findById/{id}")
@@ -39,6 +43,11 @@ public class CourseController {
     @PostMapping("/update")
     public Response update(SchoolCourse schoolCourse) {
         return Response.of(200, schoolCourseService.save(schoolCourse));
+    }
+
+    @PostMapping("/saveCourseTeacher")
+    public Response saveCourseTeacher(@RequestBody CourseTeacher courseTeacher) {
+        return schoolCourseService.saveCourseTeacher(courseTeacher);
     }
 
     @PostMapping("/deleteById/{id}")

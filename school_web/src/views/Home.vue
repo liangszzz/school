@@ -35,10 +35,9 @@
                             <span>学校管理</span>
                         </template>
                         <el-menu-item index="/year">学年管理</el-menu-item>
-                        <el-menu-item index="/room">教室管理</el-menu-item>
+                        <el-menu-item index="/course">课程管理</el-menu-item>
                         <el-menu-item index="/class">班级管理</el-menu-item>
                         <el-menu-item index="/teacher">教师管理</el-menu-item>
-                        <el-menu-item index="/course">课程管理</el-menu-item>
                     </el-submenu>
                     <el-submenu index="3">
                         <template slot="title">

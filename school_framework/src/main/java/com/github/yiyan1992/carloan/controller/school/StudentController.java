@@ -22,7 +22,7 @@ public class StudentController {
 
     @PostMapping("/list")
     public Response list(SchoolStudent schoolStudent) {
-        Page<SchoolStudent> list = schoolStudentService.findPageList(schoolStudent.getPageExample(), schoolStudent.getPageRequest());
+        Page<SchoolStudent> list = schoolStudentService.findPageList(schoolStudent.getExample(), schoolStudent.getPageRequest());
         return Response.of(200, list);
     }
 

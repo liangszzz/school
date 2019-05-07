@@ -35,7 +35,7 @@ public class Role extends Request<Role> implements Serializable {
     private Set<Menu> menus;
 
     @Override
-    public Example<Role> getPageExample() {
+    public Example<Role> getExample() {
         return Example.of(this,
                 ExampleMatcher.matching()
                         .withMatcher("roleName", matcher -> matcher.contains()));

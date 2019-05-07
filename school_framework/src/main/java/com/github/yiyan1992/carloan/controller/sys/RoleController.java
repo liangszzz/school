@@ -22,7 +22,7 @@ public class RoleController {
 
     @PostMapping("/list")
     public Response list(Role role) {
-        Page<Role> list = roleService.findPageList(role.getPageExample(), role.getPageRequest());
+        Page<Role> list = roleService.findPageList(role.getExample(), role.getPageRequest());
         return Response.of(200, list);
     }
 

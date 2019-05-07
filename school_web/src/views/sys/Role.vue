@@ -163,11 +163,7 @@
                 Vue.axios.post("/menu/saveRoleMenu", {
                     roleName: roleName,
                     menus: selected
-                }, {
-                    headers: {
-                        "content-type": "application/json",
-                    }
-                }).then(res => {
+                }, {headers: {"content-type": "application/json",}}).then(res => {
                     if (res.data.code == 200) {
                         t.$message({
                             message: '保存成功!',
