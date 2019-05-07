@@ -37,4 +37,8 @@ public class SchoolYearService {
     public void deleteById(Integer id) {
         schoolYearDao.deleteById(id);
     }
+
+    public List<SchoolYear> findAll() {
+        return schoolYearDao.findAll();
+    }
 }

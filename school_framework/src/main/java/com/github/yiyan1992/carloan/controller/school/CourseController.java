@@ -19,7 +19,6 @@ public class CourseController {
     @Autowired
     private SchoolCourseService schoolCourseService;
 
-
     @PostMapping("/list")
     public Response list(SchoolCourse schoolCourse) {
         Page<SchoolCourse> list = schoolCourseService.findPageList(schoolCourse.getPageExample(), schoolCourse.getPageRequest());

@@ -12,8 +12,14 @@
                     <el-form-item label="名称">
                         <el-input v-model="queryForm.name" clearable></el-input>
                     </el-form-item>
+                </el-col>
+                <el-col :span="6">
                     <el-form-item label="学年">
-                        <el-input v-model="queryForm.name" clearable></el-input>
+                        <el-select v-model="queryForm['schoolYear.id']" filterable clearable placeholder="请输入关键词">
+                            <el-option v-for="item in formSelect.options" :key="item.id" :label="item.name"
+                                       :value="item.id">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-form>
@@ -27,7 +33,7 @@
                 <el-table-column prop="name" label="课程名称"/>
                 <el-table-column prop="score" label="学分"/>
                 <el-table-column prop="hour" label="课时"/>
-                <el-table-column prop="year.name" label="学年"/>
+                <el-table-column prop="schoolYear.name" label="学年"/>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button @click="toShow(scope.$index, scope.row)" type="text" size="small">查看</el-button>
@@ -59,10 +65,17 @@
                     <el-input v-model="dialog.form.name" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="学分" prop="score">
-                    <el-input v-model="dialog.form.score" autocomplete="off"></el-input>
+                    <el-input-number v-model="dialog.form.score" :min="1" :max="10" label="学分"></el-input-number>
                 </el-form-item>
                 <el-form-item label="学时" prop="hour">
-                    <el-input v-model="dialog.form.hour" autocomplete="off"></el-input>
+                    <el-input-number v-model="dialog.form.hour" :min="1" :max="10" label="学时"></el-input-number>
+                </el-form-item>
+                <el-form-item label="学年" prop="schoolYear">
+                    <el-select v-model="dialog.form.schoolYear" filterable clearable placeholder="请输入关键词">
+                        <el-option v-for="item in formSelect.options" :key="item.id" :label="item.name"
+                                   :value="item.id">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -84,9 +97,13 @@
             return {
                 queryForm: {
                     name: null,
+                    "schoolYear.id": "",
                     page: 0,
                     size: 10,
                     total: 0,
+                },
+                formSelect: {
+                    options: []
                 },
                 tableData: [],
                 dialog: {
@@ -96,18 +113,32 @@
                     form: {
                         id: "",
                         name: "",
+                        score: 5,
+                        hour: 20,
+                        schoolYear: "",
                     },
                     rules: {
-                        name: [
-                            {required: true, message: '请输入名称', trigger: 'blur'}],
+                        name: [{required: true, message: '请输入名称', trigger: 'blur'}],
+                        score: [{required: true, message: '请输入学分', trigger: 'blur'}],
+                        hour: [{required: true, message: '请输入学时', trigger: 'blur'}],
+                        schoolYear: [{required: true, message: '请选择学年', trigger: 'blur'}],
                     }
                 }
             }
         },
         created() {
             this.searchForm("queryForm");
+            this.loadQueryFormSelect();
         },
         methods: {
+            loadQueryFormSelect() {
+                let t = this;
+                Vue.axios.post("year/all").then(res => {
+                    if (res.data.code == 200) {
+                        t.formSelect.options = res.data.entity;
+                    }
+                });
+            },
             handleSizeChange(val: number) {
                 this.queryForm.size = val;
                 this.searchForm('queryForm');
@@ -134,6 +165,9 @@
                 this.dialog.form = {
                     id: "",
                     name: "",
+                    score: 5,
+                    hour: 20,
+                    schoolYear: "",
                 }
             },
             toShow(index: number, row: any) {
@@ -170,6 +204,9 @@
                         t.dialog.form = {
                             id: data.entity.id,
                             name: data.entity.name,
+                            score: data.entity.score,
+                            hour: data.entity.hour,
+                            schoolYear: data.entity.schoolYear.id,
                         }
                     }
                 })
@@ -205,13 +242,9 @@
                         t.searchForm('queryForm')
                     }
                 });
-
             }
         },
-
-
     });
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -220,6 +253,12 @@
         width: 100%;
         margin-left: 0;
         margin-right: 0;
+    }
+    .el-select{
+        width: 100%;
+    }
+    .el-input-number{
+        width: 100%;
     }
 
 </style>

@@ -13,6 +13,16 @@
                         <el-input v-model="queryForm.name" clearable></el-input>
                     </el-form-item>
                 </el-col>
+                <el-col :span="6">
+                    <el-form-item label="班级名称">
+                        <el-input v-model="queryForm.name" clearable></el-input>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                    <el-form-item label="班级名称">
+                        <el-input v-model="queryForm.name" clearable></el-input>
+                    </el-form-item>
+                </el-col>
             </el-form>
         </el-row>
         <el-row>

@@ -26,6 +26,11 @@ public class RoomController {
         return Response.of(200, list);
     }
 
+    @PostMapping("/all")
+    public Response all(){
+        return Response.success(schoolRoomService.findAll());
+    }
+
     @PostMapping("/findById/{id}")
     public Response findById(@PathVariable Integer id) {
         Optional<SchoolRoom> optional = schoolRoomService.findById(id);

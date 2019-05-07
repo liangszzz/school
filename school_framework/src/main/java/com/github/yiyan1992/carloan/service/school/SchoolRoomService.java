@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,5 +31,9 @@ public class SchoolRoomService {
 
     public void deleteById(Integer id) {
         schoolRoomDao.deleteById(id);
+    }
+
+    public List<SchoolRoom> findAll() {
+        return schoolRoomDao.findAll();
     }
 }
