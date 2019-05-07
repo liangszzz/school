@@ -1,14 +1,12 @@
 package com.github.yiyan1992.carloan.controller.school;
 
+import com.github.yiyan1992.carloan.entity.query.ClassCourse;
 import com.github.yiyan1992.carloan.entity.response.Response;
 import com.github.yiyan1992.carloan.entity.school.SchoolClass;
 import com.github.yiyan1992.carloan.service.school.SchoolClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -40,6 +38,11 @@ public class ClassController {
     @PostMapping("/update")
     public Response update(SchoolClass schoolClass) {
         return Response.of(200, schoolClassService.save(schoolClass));
+    }
+
+    @PostMapping("/saveClassCourse")
+    public Response saveClassCourse(@RequestBody ClassCourse classCourse) {
+        return schoolClassService.saveClassCourse(classCourse);
     }
 
     @PostMapping("/deleteById/{id}")

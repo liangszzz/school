@@ -218,31 +218,33 @@
                     if (res.data.code == 200)
                         t.teacherDialog.tableData = res.data.entity;
                 });
-                Vue.axios.post("/course/findById/" + row.id).then(function (res) {
-                    if (res.data.code == 200) {
-                        t.$refs.teacherTable.clearSelection();
-                        let teachers = res.data.entity.schoolTeachers;
-                        teachers.forEach(value => {
-                            let index = t.teacherDialog.tableData.findIndex((value1: never, index: number, obj: never[]) => {
-                                return value1.id === value.id;
-                            });
-                            t.$refs.teacherTable.toggleRowSelection(t.teacherDialog.tableData[index]);
-                        })
-                    }
-                })
+                setTimeout(() => {
+                    Vue.axios.post("/course/findById/" + row.id).then(function (res) {
+                        if (res.data.code == 200) {
+                            t.$refs.teacherTable.clearSelection();
+                            let teachers = res.data.entity.schoolTeachers;
+                            teachers.forEach(value => {
+                                let index = t.teacherDialog.tableData.findIndex((value1: never, index: number, obj: never[]) => {
+                                    return value1.id === value.id;
+                                });
+                                t.$refs.teacherTable.toggleRowSelection(t.teacherDialog.tableData[index]);
+                            })
+                        }
+                    })
+                }, 100);
             },
             saveTeacher() {
                 let t = this;
-                let course_id = this.teacherDialog.currentCourse;
+                let course_id = t.teacherDialog.currentCourse;
                 let teachers: Number[] = [];
-                if (this.teacherDialog.multipleSelection.length == 0) {
-                    this.$message({
+                if (t.teacherDialog.multipleSelection.length == 0) {
+                    t.$message({
                         message: '没有选择老师!',
                         type: 'warning',
                         showClose: true,
                     });
                 }
-                this.teacherDialog.multipleSelection.forEach(e => {
+                t.teacherDialog.multipleSelection.forEach(e => {
                     teachers.push(e.id);
                 })
                 Vue.axios.post("/course/saveCourseTeacher", {

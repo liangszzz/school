@@ -77,7 +77,22 @@
             </div>
         </el-dialog>
 
-
+        <el-dialog :visible.sync="courseDialog.show">
+            <div slot="title" class="header-title">
+                <span> {{ courseDialog.title }}</span>
+            </div>
+            <el-table ref="courseTable" :data="courseDialog.tableData" max-height="400px"
+                      @selection-change="handleSelectionChange">
+                <el-table-column type="selection" width="55"/>
+                <el-table-column prop="name" label="课程名称" sortable/>
+                <el-table-column prop="score" label="学分" sortable/>
+                <el-table-column prop="hour" label="课时" sortable/>
+            </el-table>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="courseDialog.show = false">取 消</el-button>
+                <el-button type="primary" @click="saveCourse">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -112,6 +127,13 @@
                         name: [
                             {required: true, message: '请输入名称', trigger: 'blur'}],
                     }
+                },
+                courseDialog: {
+                    currentClass: "",
+                    title: "选择课程",
+                    show: false,
+                    tableData: [],
+                    multipleSelection: []
                 }
             }
         },
@@ -135,6 +157,9 @@
             handleCurrentChange(val: number) {
                 this.queryForm.page = val;
                 this.searchForm('queryForm');
+            },
+            handleSelectionChange(val: any) {
+                this.courseDialog.multipleSelection = val;
             },
             searchForm(formName: string) {
                 let t = this;
@@ -170,7 +195,59 @@
                 this.showDialogForm(row.id);
             },
             toCourse(index: number, row: any) {
+                let t = this;
+                t.courseDialog.currentClass = row.id;
+                t.courseDialog.show = true;
+                t.courseDialog.title = "选择教师";
 
+                Vue.axios.post("/course/allByYear/", {
+                    id: row.schoolYear.id
+                }).then(res => {
+                    if (res.data.code == 200)
+                        t.courseDialog.tableData = res.data.entity;
+                });
+                setTimeout(() => {
+                    Vue.axios.post("/class/findById/" + row.id).then(function (res) {
+                        if (res.data.code == 200) {
+                            t.$refs.courseTable.clearSelection();
+                            let courses = res.data.entity.courses;
+                            courses.forEach(value => {
+                                let index = t.courseDialog.tableData.findIndex((value1: never, index: number, obj: never[]) => {
+                                    return value1.id === value.id;
+                                });
+                                t.$refs.courseTable.toggleRowSelection(t.courseDialog.tableData[index]);
+                            })
+                        }
+                    })
+                }, 100);
+            },
+            saveCourse() {
+                let t = this;
+                let class_id = t.courseDialog.currentClass;
+                let courses: Number[] = [];
+                if (t.courseDialog.multipleSelection.length == 0) {
+                    t.$message({
+                        message: '没有选择老师!',
+                        type: 'warning',
+                        showClose: true,
+                    });
+                }
+                t.courseDialog.multipleSelection.forEach(e => {
+                    courses.push(e.id);
+                })
+                Vue.axios.post("/class/saveClassCourse", {
+                    id: class_id,
+                    courses: courses,
+                }, {headers: {"content-type": "application/json",}}).then(res => {
+                    if (res.data.code == 200) {
+                        t.$message({
+                            message: '保存成功!',
+                            type: 'success',
+                            showClose: true,
+                        });
+                        t.courseDialog.show = false;
+                    }
+                });
             },
             toDelete(index: number, row: any) {
                 let t = this;
