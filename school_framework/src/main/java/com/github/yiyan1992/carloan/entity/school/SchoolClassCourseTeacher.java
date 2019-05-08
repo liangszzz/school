@@ -17,7 +17,7 @@ public class SchoolClassCourseTeacher {
     private Integer id;
 
     @OneToOne
-    private SchoolClass schoolStudent;
+    private SchoolClass schoolClass;
 
     @OneToOne
     private SchoolCourse schoolCourse;

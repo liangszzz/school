@@ -104,13 +104,20 @@
             <div slot="title" class="header-title">
                 <span> {{ courseTeacherDialog.title }}</span>
             </div>
-            <el-table ref="courseTeacherTable" :data="courseTeacherDialog.tableData" max-height="400px" highlight-current-row
+            <el-row>
+                <el-tag>{{courseTeacherDialog.currentCourseName}}</el-tag>
+                <el-tag> 课程的老师是</el-tag>
+                <el-tag>[{{courseTeacherDialog.currentCourseTeacherName}}]</el-tag>
+            </el-row>
+            <el-table ref="courseTeacherTable" :data="courseTeacherDialog.tableData" max-height="400px"
+                      highlight-current-row
                       @current-change="handleCurrentRowChange">
                 <el-table-column prop="name" label="教师名称"/>
                 <el-table-column prop="workNo" label="教师工号"/>
                 <el-table-column prop="idCard" label="教师身份证号"/>
             </el-table>
             <div slot="footer" class="dialog-footer">
+                <el-button @click="clearTableSelect">清除选择</el-button>
                 <el-button @click="courseTeacherDialog.show = false">取 消</el-button>
                 <el-button type="primary" @click="saveCourseTeacher">确 定</el-button>
             </div>
@@ -161,6 +168,8 @@
                 courseTeacherDialog: {
                     currentClass: "",
                     currentCourse: "",
+                    currentCourseName: "",
+                    currentCourseTeacherName: "未选择",
                     title: "为班级的课程分配老师",
                     show: false,
                     tableData: [],
@@ -194,6 +203,9 @@
             },
             handleCurrentRowChange(val: any) {
                 this.courseTeacherDialog.currentRow = val;
+            },
+            clearTableSelect() {
+                this.$refs.courseTeacherTable.setCurrentRow();
             },
             searchForm(formName: string) {
                 let t = this;
@@ -232,6 +244,7 @@
                 let t = this;
                 t.courseDialog.currentClass = row.id;
                 t.courseTeacherDialog.currentClass = row.id;
+                t.courseTeacherDialog.currentCourseName = row.name;
                 t.courseDialog.show = true;
                 t.courseDialog.title = "选择课程";
 
@@ -254,7 +267,7 @@
                             })
                         }
                     })
-                }, 100);
+                }, 500);
             },
             saveCourse() {
                 let t = this;
@@ -288,52 +301,57 @@
                 let t = this;
                 t.courseTeacherDialog.currentCourse = row.id;
                 t.courseTeacherDialog.show = true;
+                t.courseTeacherDialog.currentCourseTeacherName = "未选择";
 
-                Vue.axios.post("/course/allByYear/", {
-                    id: row.schoolYear.id
-                }).then(res => {
+                Vue.axios.post("/teacher/allByCourse/" + row.id).then(res => {
                     if (res.data.code == 200)
                         t.courseTeacherDialog.tableData = res.data.entity;
                 });
                 setTimeout(() => {
-                    Vue.axios.post("/class/findById/" + row.id).then(function (res) {
+                    Vue.axios.post("/teacher/findByCourseAndClass", {
+                        classId: t.courseTeacherDialog.currentClass,
+                        courseId: row.id
+                    }).then(function (res) {
                         if (res.data.code == 200) {
-                            t.$refs.courseTeacherTable.clearSelection();
-                            let courses = res.data.entity.courses;
-                            courses.forEach(value => {
-                                let index = t.courseTeacherDialog.tableData.findIndex((value1: never, index: number, obj: never[]) => {
-                                    return value1.id === value.id;
-                                });
-                                t.$refs.courseTeacherTable.toggleRowSelection(t.courseTeacherDialog.tableData[index]);
-                            })
+                            let teacher = res.data.entity;
+                            t.courseTeacherDialog.currentCourseTeacherName = teacher.name;
+                            let index = t.courseTeacherDialog.tableData.findIndex((value: never, index: number, obj: never[]) => {
+                                return value.id === teacher.id;
+                            });
+                            t.$refs.courseTeacherTable.setCurrentRow(t.courseTeacherDialog.tableData[index]);
                         }
                     })
-                }, 100);
+                }, 500);
             },
             saveCourseTeacher() {
                 let t = this;
-                let class_id = t.courseDialog.currentClass;
-                let courses: Number[] = [];
-                if (t.courseDialog.multipleSelection.length == 0) {
+                let classId = t.courseTeacherDialog.currentClass;
+                let courseId = t.courseTeacherDialog.currentCourse;
+                let teacherId = null;
+                let teacher = t.courseTeacherDialog.currentRow;
+                if (teacher != null) {
+                    teacherId = teacher.id;
+                }
+                if (teacher == null) {
                     t.$message({
                         message: '没有选择老师!',
                         type: 'warning',
                         showClose: true,
                     });
                 }
-                t.courseDialog.multipleSelection.forEach(e => {
-                    courses.push(e.id);
-                })
-                Vue.axios.post("/class/saveClassCourse", {
-                    id: class_id,
-                    courses: courses,
-                }, {headers: {"content-type": "application/json",}}).then(res => {
+
+                Vue.axios.post("/class/saveClassCourseTeacher", {
+                    classId: classId,
+                    courseId: courseId,
+                    teacherId: teacherId,
+                }).then(res => {
                     if (res.data.code == 200) {
                         t.$message({
                             message: '保存成功!',
                             type: 'success',
                             showClose: true,
                         });
+                        t.courseTeacherDialog.show = false;
                         t.courseDialog.show = false;
                     }
                 });

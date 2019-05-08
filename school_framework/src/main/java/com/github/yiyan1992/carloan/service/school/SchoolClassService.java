@@ -1,11 +1,15 @@
 package com.github.yiyan1992.carloan.service.school;
 
+import com.github.yiyan1992.carloan.dao.school.SchoolClassCourseTeacherDao;
 import com.github.yiyan1992.carloan.dao.school.SchoolClassDao;
 import com.github.yiyan1992.carloan.dao.school.SchoolCourseDao;
+import com.github.yiyan1992.carloan.dao.school.SchoolTeacherDao;
 import com.github.yiyan1992.carloan.entity.query.ClassCourse;
 import com.github.yiyan1992.carloan.entity.response.Response;
 import com.github.yiyan1992.carloan.entity.school.SchoolClass;
+import com.github.yiyan1992.carloan.entity.school.SchoolClassCourseTeacher;
 import com.github.yiyan1992.carloan.entity.school.SchoolCourse;
+import com.github.yiyan1992.carloan.entity.school.SchoolTeacher;
 import com.github.yiyan1992.carloan.entity.sys.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -26,6 +30,12 @@ public class SchoolClassService {
 
     @Autowired
     private SchoolCourseDao schoolCourseDao;
+
+    @Autowired
+    private SchoolTeacherDao schoolTeacherDao;
+
+    @Autowired
+    private SchoolClassCourseTeacherDao schoolClassCourseTeacherDao;
 
     public SchoolClass save(SchoolClass schoolClass) {
         return schoolClassDao.save(schoolClass);
@@ -54,5 +64,40 @@ public class SchoolClassService {
             return Response.success("保存成功!");
         }
         return Response.error("班级不存在!");
+    }
+
+    public Response saveClassCourseTeacher(Integer courseId, Integer classId, Integer teacherId) {
+        Optional<SchoolClass> schoolClass = schoolClassDao.findById(classId);
+        Optional<SchoolCourse> schoolCourse = schoolCourseDao.findById(courseId);
+
+        if (schoolClass.isPresent() && schoolCourse.isPresent()) {
+            SchoolClassCourseTeacher schoolClassCourseTeacher = new SchoolClassCourseTeacher();
+            schoolClassCourseTeacher.setSchoolClass(schoolClass.get());
+            schoolClassCourseTeacher.setSchoolCourse(schoolCourse.get());
+            Optional<SchoolClassCourseTeacher> one = schoolClassCourseTeacherDao.findOne(Example.of(schoolClassCourseTeacher));
+
+            if (teacherId==null){
+                schoolClassCourseTeacherDao.delete(one.get());
+                return Response.success("成功!");
+            }
+            else {
+                Optional<SchoolTeacher> schoolTeacher = schoolTeacherDao.findById(teacherId);
+                if (schoolTeacher.isPresent()) {
+                    if (one.isPresent()) {
+                        one.get().setSchoolTeacher(schoolTeacher.get());
+                        schoolClassCourseTeacherDao.save(one.get());
+                    } else {
+                        schoolClassCourseTeacher.setSchoolTeacher(schoolTeacher.get());
+                        schoolClassCourseTeacherDao.save(schoolClassCourseTeacher);
+                    }
+                } else {
+                    if (one.isPresent()) {
+                        schoolClassCourseTeacherDao.delete(one.get());
+                    }
+                }
+                return Response.success("成功!");
+            }
+        }
+        return Response.error("没有班级和课程!");
     }
 }

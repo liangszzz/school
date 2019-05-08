@@ -45,6 +45,12 @@ public class ClassController {
         return schoolClassService.saveClassCourse(classCourse);
     }
 
+    @PostMapping("/saveClassCourseTeacher")
+    public Response saveClassCourseTeacher(Integer courseId,Integer classId,Integer teacherId) {
+        return schoolClassService.saveClassCourseTeacher(courseId,classId,teacherId);
+    }
+
+
     @PostMapping("/deleteById/{id}")
     public Response delete(@PathVariable Integer id) {
         schoolClassService.deleteById(id);

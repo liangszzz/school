@@ -31,6 +31,15 @@ public class TeacherController {
         return Response.success(schoolTeacherService.findAll());
     }
 
+    @PostMapping("/allByCourse/{courseId}")
+    public Response allByCourse(@PathVariable Integer courseId) {
+        return Response.success(schoolTeacherService.findAllByCourse(courseId));
+    }
+
+    @PostMapping("/findByCourseAndClass")
+    public Response findByCourseAndClass(Integer courseId,Integer classId){
+        return schoolTeacherService.findByCourseAndClass(courseId, classId);
+    }
 
     @PostMapping("/findById/{id}")
     public Response findById(@PathVariable Integer id) {
