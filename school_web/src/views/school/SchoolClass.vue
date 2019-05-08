@@ -37,7 +37,6 @@
                         <el-button @click="toShow(scope.$index, scope.row)" type="text" size="small">查看</el-button>
                         <el-button @click="toUpdate(scope.$index, scope.row)" type="text" size="small">编辑</el-button>
                         <el-button @click="toCourse(scope.$index, scope.row)" type="text" size="small">课程</el-button>
-                        <el-button @click="toCourseTeacher(scope.$index, scope.row)" type="text" size="small">课程老师</el-button>
                         <el-button @click.prevent="toDelete(scope.$index, scope.row)" type="text" size="small">删除
                         </el-button>
                     </template>
@@ -88,12 +87,35 @@
                 <el-table-column prop="name" label="课程名称" sortable/>
                 <el-table-column prop="score" label="学分" sortable/>
                 <el-table-column prop="hour" label="课时" sortable/>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button @click="toCourseTeacher(scope.$index, scope.row)" type="text" size="small">选择老师
+                        </el-button>
+                    </template>
+                </el-table-column>
             </el-table>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="courseDialog.show = false">取 消</el-button>
                 <el-button type="primary" @click="saveCourse">确 定</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog :visible.sync="courseTeacherDialog.show">
+            <div slot="title" class="header-title">
+                <span> {{ courseTeacherDialog.title }}</span>
+            </div>
+            <el-table ref="courseTeacherTable" :data="courseTeacherDialog.tableData" max-height="400px" highlight-current-row
+                      @current-change="handleCurrentRowChange">
+                <el-table-column prop="name" label="教师名称"/>
+                <el-table-column prop="workNo" label="教师工号"/>
+                <el-table-column prop="idCard" label="教师身份证号"/>
+            </el-table>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="courseTeacherDialog.show = false">取 消</el-button>
+                <el-button type="primary" @click="saveCourseTeacher">确 定</el-button>
+            </div>
+        </el-dialog>
+
     </div>
 </template>
 
@@ -135,6 +157,14 @@
                     show: false,
                     tableData: [],
                     multipleSelection: []
+                },
+                courseTeacherDialog: {
+                    currentClass: "",
+                    currentCourse: "",
+                    title: "为班级的课程分配老师",
+                    show: false,
+                    tableData: [],
+                    currentRow: null,
                 }
             }
         },
@@ -161,6 +191,9 @@
             },
             handleSelectionChange(val: any) {
                 this.courseDialog.multipleSelection = val;
+            },
+            handleCurrentRowChange(val: any) {
+                this.courseTeacherDialog.currentRow = val;
             },
             searchForm(formName: string) {
                 let t = this;
@@ -198,6 +231,7 @@
             toCourse(index: number, row: any) {
                 let t = this;
                 t.courseDialog.currentClass = row.id;
+                t.courseTeacherDialog.currentClass = row.id;
                 t.courseDialog.show = true;
                 t.courseDialog.title = "选择课程";
 
@@ -250,6 +284,62 @@
                     }
                 });
             },
+            toCourseTeacher(index: number, row: any) {
+                let t = this;
+                t.courseTeacherDialog.currentCourse = row.id;
+                t.courseTeacherDialog.show = true;
+
+                Vue.axios.post("/course/allByYear/", {
+                    id: row.schoolYear.id
+                }).then(res => {
+                    if (res.data.code == 200)
+                        t.courseTeacherDialog.tableData = res.data.entity;
+                });
+                setTimeout(() => {
+                    Vue.axios.post("/class/findById/" + row.id).then(function (res) {
+                        if (res.data.code == 200) {
+                            t.$refs.courseTeacherTable.clearSelection();
+                            let courses = res.data.entity.courses;
+                            courses.forEach(value => {
+                                let index = t.courseTeacherDialog.tableData.findIndex((value1: never, index: number, obj: never[]) => {
+                                    return value1.id === value.id;
+                                });
+                                t.$refs.courseTeacherTable.toggleRowSelection(t.courseTeacherDialog.tableData[index]);
+                            })
+                        }
+                    })
+                }, 100);
+            },
+            saveCourseTeacher() {
+                let t = this;
+                let class_id = t.courseDialog.currentClass;
+                let courses: Number[] = [];
+                if (t.courseDialog.multipleSelection.length == 0) {
+                    t.$message({
+                        message: '没有选择老师!',
+                        type: 'warning',
+                        showClose: true,
+                    });
+                }
+                t.courseDialog.multipleSelection.forEach(e => {
+                    courses.push(e.id);
+                })
+                Vue.axios.post("/class/saveClassCourse", {
+                    id: class_id,
+                    courses: courses,
+                }, {headers: {"content-type": "application/json",}}).then(res => {
+                    if (res.data.code == 200) {
+                        t.$message({
+                            message: '保存成功!',
+                            type: 'success',
+                            showClose: true,
+                        });
+                        t.courseDialog.show = false;
+                    }
+                });
+            },
+
+
             toDelete(index: number, row: any) {
                 let t = this;
                 Vue.axios.post("/class/deleteById/" + row.id).then(function (res) {
