@@ -28,9 +28,6 @@ public class SchoolStudent extends Request<SchoolStudent> implements Serializabl
     @Column(nullable = false, unique = true, length = 18)
     private String idCard;
 
-    /**
-     * 学号
-     */
     @Column(nullable = false, unique = true, length = 18)
     private String schoolNo;
 
@@ -40,10 +37,15 @@ public class SchoolStudent extends Request<SchoolStudent> implements Serializabl
     @OneToOne
     private SchoolYear schoolYear;
 
+    @OneToOne
+    private SchoolClass schoolClass;
+
     @Override
     public Example<SchoolStudent> getExample() {
-        return Example.of(this,
-                ExampleMatcher.matching()
-                        .withMatcher("name", matcher -> matcher.contains()));
+        return Example.of(this, ExampleMatcher.matching()
+                        .withMatcher("name", matcher -> matcher.contains())
+                        .withMatcher("idCard", matcher -> matcher.contains())
+                        .withMatcher("schoolNo", matcher -> matcher.contains())
+        );
     }
 }
