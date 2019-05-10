@@ -3,7 +3,7 @@
     <el-row>
       <el-breadcrumb separator="/" style="height: 40px;">
         <el-breadcrumb-item>校园管理</el-breadcrumb-item>
-        <el-breadcrumb-item>学生管理</el-breadcrumb-item>
+        <el-breadcrumb-item>学生管理</el-breadcrumb-item> 
       </el-breadcrumb>
     </el-row>
     <el-row>
