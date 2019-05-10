@@ -76,11 +76,10 @@ public class SchoolClassService {
             schoolClassCourseTeacher.setSchoolCourse(schoolCourse.get());
             Optional<SchoolClassCourseTeacher> one = schoolClassCourseTeacherDao.findOne(Example.of(schoolClassCourseTeacher));
 
-            if (teacherId==null){
+            if (teacherId == null) {
                 schoolClassCourseTeacherDao.delete(one.get());
                 return Response.success("成功!");
-            }
-            else {
+            } else {
                 Optional<SchoolTeacher> schoolTeacher = schoolTeacherDao.findById(teacherId);
                 if (schoolTeacher.isPresent()) {
                     if (one.isPresent()) {
@@ -99,5 +98,9 @@ public class SchoolClassService {
             }
         }
         return Response.error("没有班级和课程!");
+    }
+
+    public List<SchoolClass> findAll(SchoolClass schoolClass) {
+        return schoolClassDao.findAll(schoolClass.getExample());
     }
 }

@@ -2,6 +2,8 @@ package com.github.yiyan1992.carloan.entity.school;
 
 import com.github.yiyan1992.carloan.entity.request.Request;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 
@@ -12,7 +14,8 @@ import java.io.Serializable;
  * 学年
  * 如2019 学年入学
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "school_year")
 public class SchoolYear extends Request<SchoolYear> implements Serializable {

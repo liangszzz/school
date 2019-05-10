@@ -3,6 +3,8 @@ package com.github.yiyan1992.carloan.entity.school;
 
 import com.github.yiyan1992.carloan.entity.request.Request;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 
@@ -13,7 +15,8 @@ import java.util.Set;
 /**
  * 班级
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "school_student")
 public class SchoolStudent extends Request<SchoolStudent> implements Serializable {

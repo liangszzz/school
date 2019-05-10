@@ -24,6 +24,11 @@ public class ClassController {
         return Response.of(200, list);
     }
 
+    @PostMapping("/all")
+    public Response all(SchoolClass schoolClass){
+        return Response.success(schoolClassService.findAll(schoolClass));
+    }
+
     @PostMapping("/findById/{id}")
     public Response findById(@PathVariable Integer id) {
         Optional<SchoolClass> schoolClass = schoolClassService.findById(id);

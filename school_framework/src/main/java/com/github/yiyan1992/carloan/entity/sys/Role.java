@@ -3,6 +3,8 @@ package com.github.yiyan1992.carloan.entity.sys;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.yiyan1992.carloan.entity.request.Request;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 
@@ -14,7 +16,8 @@ import java.util.Set;
 /**
  * @author admin
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "s_role")
 public class Role extends Request<Role> implements Serializable {

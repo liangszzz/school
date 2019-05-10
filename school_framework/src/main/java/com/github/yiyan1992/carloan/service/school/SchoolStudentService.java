@@ -1,7 +1,11 @@
 package com.github.yiyan1992.carloan.service.school;
 
+import com.github.yiyan1992.carloan.dao.school.SchoolClassDao;
 import com.github.yiyan1992.carloan.dao.school.SchoolStudentDao;
+import com.github.yiyan1992.carloan.entity.exception.NoFindDataException;
+import com.github.yiyan1992.carloan.entity.school.SchoolClass;
 import com.github.yiyan1992.carloan.entity.school.SchoolStudent;
+import com.github.yiyan1992.carloan.entity.school.SchoolYear;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -16,9 +20,16 @@ public class SchoolStudentService {
     @Autowired
     private SchoolStudentDao schoolStudentDao;
 
+    @Autowired
+    private SchoolClassDao schoolClassDao;
 
-    public SchoolStudent save(SchoolStudent schoolStudent) {
-        return schoolStudentDao.save(schoolStudent);
+    public SchoolStudent save(SchoolStudent schoolStudent) throws NoFindDataException {
+        Optional<SchoolClass> schoolClass = schoolClassDao.findById(schoolStudent.getSchoolClass().getId());
+        if (schoolClass.isPresent()) {
+            schoolStudent.setSchoolYear(schoolClass.get().getSchoolYear());
+            return schoolStudentDao.save(schoolStudent);
+        }
+        throw new NoFindDataException("班级");
     }
 
     public Optional<SchoolStudent> findUserBySchoolNo(String schoolNo) {
@@ -37,6 +48,6 @@ public class SchoolStudentService {
     }
 
     public void deleteById(Integer id) {
-        schoolStudentDao.findById(id);
+        schoolStudentDao.deleteById(id);
     }
 }

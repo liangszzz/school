@@ -2,7 +2,9 @@ package com.github.yiyan1992.carloan.entity.sys;
 
 import com.github.yiyan1992.carloan.entity.request.Request;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 
@@ -26,7 +28,8 @@ import java.util.List;
 @NamedNativeQuery(name = "Menu.findParentList", query = "SELECT m.*, ( SELECT count(1) FROM s_menu WHERE menu_id = m.id ) `count` FROM s_menu m WHERE ISNULL(m.menu_id)", resultSetMapping = "menus")
 @NamedNativeQuery(name = "Menu.findChildrenList", query = "SELECT m.*,(SELECT count( 1 ) FROM s_menu WHERE menu_id = m.id ) as `count` FROM s_menu m WHERE m.menu_id=:id", resultSetMapping = "menus")
 @NamedNativeQuery(name = "Menu.findMenuByRole", query = "SELECT m.*,0 'count' FROM s_menu m WHERE m.id in (select menu_id from s_role_menu WHERE role_name=:roleName)", resultSetMapping = "menus")
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "s_menu")
 @NoArgsConstructor
