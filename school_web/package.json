@@ -19,6 +19,7 @@
     "vue-router": "^3.0.3"
   },
   "devDependencies": {
+    "tar": ">=4.4.2",
     "@vue/cli-plugin-babel": "^3.6.0",
     "@vue/cli-plugin-typescript": "^3.6.0",
     "@vue/cli-service": "^3.6.0",
