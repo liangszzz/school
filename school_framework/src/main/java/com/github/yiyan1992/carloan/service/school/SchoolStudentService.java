@@ -1,17 +1,20 @@
 package com.github.yiyan1992.carloan.service.school;
 
+import com.github.yiyan1992.carloan.dao.school.SchoolClassCourseTeacherDao;
 import com.github.yiyan1992.carloan.dao.school.SchoolClassDao;
+import com.github.yiyan1992.carloan.dao.school.SchoolStudentCourseTeacherDao;
 import com.github.yiyan1992.carloan.dao.school.SchoolStudentDao;
 import com.github.yiyan1992.carloan.entity.exception.NoFindDataException;
-import com.github.yiyan1992.carloan.entity.school.SchoolClass;
-import com.github.yiyan1992.carloan.entity.school.SchoolStudent;
-import com.github.yiyan1992.carloan.entity.school.SchoolYear;
+import com.github.yiyan1992.carloan.entity.school.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,14 +26,47 @@ public class SchoolStudentService {
     @Autowired
     private SchoolClassDao schoolClassDao;
 
-    public SchoolStudent save(SchoolStudent schoolStudent) throws NoFindDataException {
+    @Autowired
+    private SchoolStudentCourseTeacherDao schoolStudentCourseTeacherDao;
+
+    @Autowired
+    private SchoolClassCourseTeacherDao schoolClassCourseTeacherDao;
+
+    public SchoolStudent save(SchoolStudent schoolStudent) {
         Optional<SchoolClass> schoolClass = schoolClassDao.findById(schoolStudent.getSchoolClass().getId());
         if (schoolClass.isPresent()) {
             schoolStudent.setSchoolYear(schoolClass.get().getSchoolYear());
-            return schoolStudentDao.save(schoolStudent);
+            if (schoolStudent.getId() != null) {
+                //保存学生老师课程信息
+                SchoolStudentCourseTeacher schoolStudentCourseTeacher = new SchoolStudentCourseTeacher();
+                schoolStudentCourseTeacher.setSchoolStudent(schoolStudent);
+                Example<SchoolStudentCourseTeacher> example = Example.of(schoolStudentCourseTeacher);
+                List<SchoolStudentCourseTeacher> list = schoolStudentCourseTeacherDao.findAll(example);
+                schoolStudentCourseTeacherDao.deleteAll(list);
+            }
+            schoolStudent = schoolStudentDao.save(schoolStudent);
+
+            List<SchoolStudentCourseTeacher> savelist = new ArrayList<>();
+            Iterator<SchoolCourse> iterator = schoolClass.get().getCourses().iterator();
+            while (iterator.hasNext()) {
+                SchoolCourse next = iterator.next();
+                SchoolStudentCourseTeacher tmp = new SchoolStudentCourseTeacher();
+                tmp.setSchoolStudent(schoolStudent);
+                tmp.setSchoolCourse(next);
+                SchoolClassCourseTeacher schoolClassCourseTeacher = new SchoolClassCourseTeacher();
+                schoolClassCourseTeacher.setSchoolClass(schoolClass.get());
+                schoolClassCourseTeacher.setSchoolCourse(next);
+                Optional<SchoolClassCourseTeacher> one = schoolClassCourseTeacherDao.findOne(Example.of(schoolClassCourseTeacher));
+                if (!one.isPresent()) throw new NoFindDataException("班级老师课程");
+                tmp.setSchoolTeacher(one.get().getSchoolTeacher());
+                savelist.add(tmp);
+            }
+            schoolStudentCourseTeacherDao.saveAll(savelist);
+            return schoolStudent;
         }
         throw new NoFindDataException("班级");
     }
+
 
     public Optional<SchoolStudent> findUserBySchoolNo(String schoolNo) {
         SchoolStudent schoolStudent = new SchoolStudent();
@@ -48,6 +84,14 @@ public class SchoolStudentService {
     }
 
     public void deleteById(Integer id) {
+        Optional<SchoolStudent> schoolStudent = schoolStudentDao.findById(id);
+        if (!schoolStudent.isPresent()) {
+            throw new NoFindDataException("学生");
+        }
+        SchoolStudentCourseTeacher schoolStudentCourseTeacher = new SchoolStudentCourseTeacher();
+        schoolStudentCourseTeacher.setSchoolStudent(schoolStudent.get());
+        List<SchoolStudentCourseTeacher> all = schoolStudentCourseTeacherDao.findAll(Example.of(schoolStudentCourseTeacher));
+        schoolStudentCourseTeacherDao.deleteAll(all);
         schoolStudentDao.deleteById(id);
     }
 }
