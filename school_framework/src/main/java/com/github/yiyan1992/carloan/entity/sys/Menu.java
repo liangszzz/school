@@ -35,7 +35,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Menu extends Request<Menu> implements Serializable {
 
-    public Menu(Integer id, String name, Integer type, String url, String permission, Integer count) {
+    public Menu(Integer id, String name, String type, String url, String permission, Integer count) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -56,7 +56,7 @@ public class Menu extends Request<Menu> implements Serializable {
      * 0 菜单 1:按钮
      */
     @Column(name = "type", length = 1)
-    private Integer type;
+    private String type;
 
     @Column(name = "url", length = 50)
     private String url;

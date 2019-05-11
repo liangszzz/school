@@ -1,7 +1,13 @@
 package com.github.yiyan1992.carloan.controller.sys;
 
+import com.github.yiyan1992.carloan.config.MagicValue;
 import com.github.yiyan1992.carloan.entity.response.Response;
+import com.github.yiyan1992.carloan.entity.school.SchoolStudent;
+import com.github.yiyan1992.carloan.entity.school.SchoolTeacher;
+import com.github.yiyan1992.carloan.entity.sys.ShiroUser;
 import com.github.yiyan1992.carloan.entity.sys.User;
+import com.github.yiyan1992.carloan.service.school.SchoolStudentService;
+import com.github.yiyan1992.carloan.service.school.SchoolTeacherService;
 import com.github.yiyan1992.carloan.service.sys.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -19,6 +25,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private SchoolTeacherService schoolTeacherService;
+
+    @Autowired
+    private SchoolStudentService schoolStudentService;
+
     /**
      * 获取用户信息
      *
@@ -27,7 +39,11 @@ public class UserController {
     @PostMapping(value = "/home")
     public Response home() {
         Subject subject = SecurityUtils.getSubject();
-        Object user =  subject.getPrincipals().getPrimaryPrincipal();
+        Object user = subject.getPrincipals().getPrimaryPrincipal();
+        //菜单列表
+        //管理员 系统管理 学校管理
+        //教师 教师改分
+        //学生 我的课程,选课
         return Response.of(200, user);
     }
 
@@ -50,15 +66,36 @@ public class UserController {
             return Response.success("密码保存成功!");
         }
         Subject subject = SecurityUtils.getSubject();
-        String username = (String) subject.getPrincipals().getPrimaryPrincipal();
-        Optional<User> user = userService.findUserByName(username);
-        if (user.isPresent()) {
-            if (password2.equals(user.get().getPassword())) {
-                user.get().setPassword(password2);
-                userService.save(user.get());
-                return Response.success("密码保存成功!");
+        ShiroUser user = (ShiroUser) subject.getPrincipals().getPrimaryPrincipal();
+        //如果管理员
+        if (MagicValue.isManage(user.getType())) {
+            Optional<User> u = userService.findUserByName(user.getUsername());
+            if (u.isPresent()) {
+                if (password.equals(u.get().getPassword())) {
+                    u.get().setPassword(password2);
+                    userService.save(u.get());
+                    return Response.success("密码保存成功!");
+                }
+                return Response.of(500, "保存失败!");
             }
-            return Response.of(500, "保存失败!");
+        } else if (MagicValue.isTeacher(user.getType())) {
+            Optional<SchoolTeacher> teacher = schoolTeacherService.findUserByWorkNo(user.getUsername());
+            if (teacher.isPresent()) {
+                if (password.equals(teacher.get().getPassword())) {
+                    teacher.get().setPassword(password2);
+                    schoolTeacherService.save(teacher.get());
+                    return Response.success("密码保存成功!");
+                }
+            }
+        } else if (MagicValue.isStudent(user.getType())) {
+            Optional<SchoolStudent> student = schoolStudentService.findUserBySchoolNo(user.getUsername());
+            if (student.isPresent()) {
+                if (password.equals(student.get().getPassword())) {
+                    student.get().setPassword(password2);
+                    schoolStudentService.save(student.get());
+                    return Response.success("密码保存成功!");
+                }
+            }
         }
         return Response.of(500, "保存失败!");
     }

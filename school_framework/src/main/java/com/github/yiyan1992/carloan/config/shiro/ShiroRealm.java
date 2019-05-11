@@ -48,10 +48,13 @@ public class ShiroRealm extends AuthorizingRealm {
             username = username.substring(MagicValue.LOGIN_TYPE_MANAGE.length());
             Optional<User> user = userService.findUserByName(username);
             if (user.isPresent()) {
+
                 ShiroUser shiroUser = new ShiroUser();
                 shiroUser.setName(user.get().getName());
                 shiroUser.setUserType("管理员:");
                 shiroUser.setObject(user.get());
+                shiroUser.setUsername(username);
+                shiroUser.setType(MagicValue.LOGIN_TYPE_MANAGE);
 
                 authenticationInfo = new SimpleAuthenticationInfo(
                         shiroUser,
@@ -67,6 +70,8 @@ public class ShiroRealm extends AuthorizingRealm {
                 shiroUser.setName(user.get().getName());
                 shiroUser.setUserType("老师:");
                 shiroUser.setObject(user.get());
+                shiroUser.setUsername(user.get().getWorkNo());
+                shiroUser.setType(MagicValue.LOGIN_TYPE_TEACHER);
 
                 authenticationInfo = new SimpleAuthenticationInfo(
                         shiroUser,
@@ -83,7 +88,8 @@ public class ShiroRealm extends AuthorizingRealm {
                 shiroUser.setName(user.get().getName());
                 shiroUser.setUserType("学生:");
                 shiroUser.setObject(user.get());
-
+                shiroUser.setUsername(user.get().getSchoolNo());
+                shiroUser.setType(MagicValue.LOGIN_TYPE_STUDENT);
                 authenticationInfo = new SimpleAuthenticationInfo(
                         shiroUser,
                         user.get().getPassword(),
