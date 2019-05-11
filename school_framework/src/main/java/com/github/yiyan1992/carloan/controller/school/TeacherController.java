@@ -8,6 +8,7 @@ import com.github.yiyan1992.carloan.entity.school.SchoolTeacher;
 import com.github.yiyan1992.carloan.entity.sys.ShiroUser;
 import com.github.yiyan1992.carloan.service.school.SchoolTeacherService;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,7 @@ public class TeacherController {
     @Autowired
     private SchoolTeacherService schoolTeacherService;
 
-
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/list")
     public Response list(SchoolTeacher schoolTeacher) {
         Page<SchoolTeacher> list = schoolTeacherService.findPageList(schoolTeacher.getExample(), schoolTeacher.getPageRequest());
@@ -43,11 +44,13 @@ public class TeacherController {
         return Response.success(schoolTeacherService.findAllByCourse(courseId));
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/findByCourseAndClass")
     public Response findByCourseAndClass(Integer courseId, Integer classId) {
         return schoolTeacherService.findByCourseAndClass(courseId, classId);
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_TEACHER)
     @PostMapping("/myCourse")
     public Response myCourse() {
         Subject subject = SecurityUtils.getSubject();
@@ -59,6 +62,7 @@ public class TeacherController {
         return Response.success(list);
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_TEACHER)
     @PostMapping("/myCourseStudent/{courseId}")
     public Response myCourseStudent(@PathVariable Integer courseId) {
         Subject subject = SecurityUtils.getSubject();
@@ -70,33 +74,38 @@ public class TeacherController {
         return Response.success(list);
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_TEACHER)
     @PostMapping("/scoreToStudent")
-    public Response scoreToStudent(Integer courseId, Integer studentId,Integer score) {
+    public Response scoreToStudent(Integer courseId, Integer studentId, Integer score) {
         Subject subject = SecurityUtils.getSubject();
         ShiroUser user = (ShiroUser) subject.getPrincipals().getPrimaryPrincipal();
         if (!MagicValue.isTeacher(user.getType())) {
             return Response.error("不是老师,无法使用");
         }
-        schoolTeacherService.scoreToStudent(user.getUsername(),courseId,studentId,score);
+        schoolTeacherService.scoreToStudent(user.getUsername(), courseId, studentId, score);
         return Response.success("");
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/findById/{id}")
     public Response findById(@PathVariable Integer id) {
         Optional<SchoolTeacher> optional = schoolTeacherService.findById(id);
         return Response.success(optional.get());
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/add")
     public Response add(SchoolTeacher schoolYear) {
         return Response.of(200, schoolTeacherService.save(schoolYear));
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/update")
     public Response update(SchoolTeacher schoolTeacher) {
         return Response.of(200, schoolTeacherService.save(schoolTeacher));
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/deleteById/{id}")
     public Response delete(@PathVariable Integer id) {
         schoolTeacherService.deleteById(id);

@@ -11,6 +11,7 @@ import com.github.yiyan1992.carloan.service.school.SchoolTeacherService;
 import com.github.yiyan1992.carloan.service.sys.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,25 +41,24 @@ public class UserController {
     public Response home() {
         Subject subject = SecurityUtils.getSubject();
         Object user = subject.getPrincipals().getPrimaryPrincipal();
-        //菜单列表
-        //管理员 系统管理 学校管理
-        //教师 教师改分
-        //学生 我的课程,选课
         return Response.of(200, user);
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/list")
     public Response list(User user) {
         Page<User> listByUser = userService.findListByUser(user.getExample(), user.getPageRequest());
         return Response.of(200, listByUser);
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/findUserByUsername/{username}")
     public Response findUserByUsername(@PathVariable String username) {
         Optional<User> user = userService.findUserByName(username);
         return Response.success(user.get());
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @RequiresAuthentication
     @PostMapping("/updatePwd")
     public Response updatePwd(@RequestParam String password, @RequestParam String password2) {
@@ -100,12 +100,14 @@ public class UserController {
         return Response.of(500, "保存失败!");
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/add")
     public Response add(User user) {
         user.setPassword("default123456");
         return Response.of(200, userService.save(user));
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/update")
     public Response update(User user) {
         Optional<User> userSql = userService.findUserByName(user.getUsername());
@@ -116,6 +118,7 @@ public class UserController {
         return Response.of(200, userService.save(user));
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/deleteByUsername/{username}")
     public Response delete(@PathVariable String username) {
         userService.deleteByUsername(username);

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <el-row class="home-top">
-      <el-col :span="5">学生管理系统</el-col>
+      <el-col :span="5">课程管理系统</el-col>
       <el-col :span="15">&nbsp;</el-col>
       <el-col :span="4">
         <el-dropdown trigger="click" @command="handleCommand">
@@ -19,15 +19,13 @@
     <el-row class="home-body">
       <el-col :span="4">
         <el-menu router default-active="1" menu-trigger="click" class="el-menu-vertical-demo">
-          <el-submenu index="1">
+          <el-submenu index="1" v-if="userType=='管理员:'">
             <template slot="title">
               <span>系统管理</span>
             </template>
             <el-menu-item index="/user">管理员管理</el-menu-item>
-            <el-menu-item index="/role">角色管理</el-menu-item>
-            <el-menu-item index="/menu">菜单管理</el-menu-item>
           </el-submenu>
-          <el-submenu index="2">
+          <el-submenu index="2" v-if="userType=='管理员:'">
             <template slot="title">
               <span>学校管理</span>
             </template>
@@ -37,13 +35,13 @@
             <el-menu-item index="/teacher">教师管理</el-menu-item>
             <el-menu-item index="/student">学生管理</el-menu-item>
           </el-submenu>
-          <el-submenu index="3">
+          <el-submenu index="3" v-if="userType=='老师:'">
             <template slot="title">
               <span>教师信息</span>
             </template>
             <el-menu-item index="/teacherCourse">教师改分</el-menu-item>
           </el-submenu>
-          <el-submenu index="4">
+          <el-submenu index="4" v-if="userType=='学生:'">
             <template slot="title">
               <span>学生信息</span>
             </template>

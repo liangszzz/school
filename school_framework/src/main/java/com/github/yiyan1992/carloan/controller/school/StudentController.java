@@ -7,6 +7,7 @@ import com.github.yiyan1992.carloan.entity.school.SchoolStudent;
 import com.github.yiyan1992.carloan.entity.sys.ShiroUser;
 import com.github.yiyan1992.carloan.service.school.SchoolStudentService;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,12 +26,14 @@ public class StudentController {
     @Autowired
     private SchoolStudentService schoolStudentService;
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/list")
     public Response list(SchoolStudent schoolStudent) {
         Page<SchoolStudent> list = schoolStudentService.findPageList(schoolStudent.getExample(), schoolStudent.getPageRequest());
         return Response.of(200, list);
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_STUDENT)
     @RequestMapping("/myCourse")
     public Response myCourse() {
         Subject subject = SecurityUtils.getSubject();
@@ -42,22 +45,26 @@ public class StudentController {
         return Response.success(list);
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/findById/{id}")
     public Response findById(@PathVariable Integer id) {
         Optional<SchoolStudent> optional = schoolStudentService.findById(id);
         return Response.success(optional.get());
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/add")
     public Response add(SchoolStudent schoolStudent) {
         return Response.of(200, schoolStudentService.save(schoolStudent));
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/update")
     public Response update(SchoolStudent schoolYear) {
         return Response.of(200, schoolStudentService.save(schoolYear));
     }
 
+    @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/deleteById/{id}")
     public Response delete(@PathVariable Integer id) {
         schoolStudentService.deleteById(id);
