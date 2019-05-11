@@ -1,4 +1,4 @@
-package com.github.yiyan1992.carloan.entity.request;
+package com.github.yiyan1992.carloan.entity.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;

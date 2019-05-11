@@ -2,7 +2,8 @@ package com.github.yiyan1992.carloan.service.school;
 
 import com.github.yiyan1992.carloan.dao.school.*;
 import com.github.yiyan1992.carloan.entity.exception.NoFindDataException;
-import com.github.yiyan1992.carloan.entity.response.Response;
+import com.github.yiyan1992.carloan.entity.base.Response;
+import com.github.yiyan1992.carloan.entity.response.StudentCourseResponse;
 import com.github.yiyan1992.carloan.entity.school.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -25,6 +26,9 @@ public class SchoolTeacherService {
 
     @Autowired
     private SchoolClassDao schoolClassDao;
+
+    @Autowired
+    private SchoolStudentDao schoolStudentDao;
 
     @Autowired
     private SchoolClassCourseTeacherDao schoolClassCourseTeacherDao;
@@ -99,5 +103,61 @@ public class SchoolTeacherService {
             return Response.error("没有老师!");
         }
         return Response.error("课程或班级不存在!");
+    }
+
+    public List<SchoolCourse> findAllCourseByWorkNo(String workNo) {
+        return schoolCourseDao.findAllByWorkNo(workNo);
+    }
+
+    public List<StudentCourseResponse> findStudentCourseByWorkNo(String workNo, Integer courseId) {
+        Optional<SchoolTeacher> schoolTeacher = findUserByWorkNo(workNo);
+        if (schoolTeacher.isEmpty()) throw new NoFindDataException("教师");
+        Optional<SchoolCourse> schoolCourse = schoolCourseDao.findById(courseId);
+        if (schoolCourse.isEmpty()) throw new NoFindDataException("课程");
+
+        SchoolStudentCourseTeacher schoolStudentCourseTeacher = new SchoolStudentCourseTeacher();
+        schoolStudentCourseTeacher.setSchoolTeacher(schoolTeacher.get());
+        schoolStudentCourseTeacher.setSchoolCourse(schoolCourse.get());
+
+        List<SchoolStudentCourseTeacher> all = schoolStudentCourseTeacherDao.findAll(Example.of(schoolStudentCourseTeacher));
+        List<StudentCourseResponse> list = new ArrayList<>();
+        all.stream().forEach(e -> {
+            StudentCourseResponse studentCourseResponse = new StudentCourseResponse();
+            studentCourseResponse.setId(e.getId());
+            studentCourseResponse.setCourseId(e.getSchoolCourse().getId());
+            studentCourseResponse.setCourseName(e.getSchoolCourse().getName());
+            if (e.getScore() != null)
+                studentCourseResponse.setScore(e.getScore());
+            studentCourseResponse.setTeacherName(e.getSchoolTeacher().getName());
+            studentCourseResponse.setTeacherId(e.getSchoolTeacher().getId());
+            studentCourseResponse.setStudentId(e.getSchoolStudent().getId());
+            studentCourseResponse.setStudentName(e.getSchoolStudent().getName());
+            studentCourseResponse.setClassId(e.getSchoolStudent().getSchoolClass().getId());
+            studentCourseResponse.setClassName(e.getSchoolStudent().getSchoolClass().getName());
+
+            list.add(studentCourseResponse);
+        });
+        return list;
+    }
+
+    public void scoreToStudent(String workNo, Integer courseId, Integer studentId, Integer score) {
+        Optional<SchoolTeacher> schoolTeacher = findUserByWorkNo(workNo);
+        if (schoolTeacher.isEmpty()) throw new NoFindDataException("教师");
+        Optional<SchoolCourse> schoolCourse = schoolCourseDao.findById(courseId);
+        if (schoolCourse.isEmpty()) throw new NoFindDataException("课程");
+        Optional<SchoolStudent> schoolStudent = schoolStudentDao.findById(studentId);
+        if (schoolStudent.isEmpty()) throw new NoFindDataException("学生");
+
+        SchoolStudentCourseTeacher schoolStudentCourseTeacher = new SchoolStudentCourseTeacher();
+        schoolStudentCourseTeacher.setSchoolTeacher(schoolTeacher.get());
+        schoolStudentCourseTeacher.setSchoolCourse(schoolCourse.get());
+        schoolStudentCourseTeacher.setSchoolStudent(schoolStudent.get());
+
+        Optional<SchoolStudentCourseTeacher> one = schoolStudentCourseTeacherDao.findOne(Example.of(schoolStudentCourseTeacher));
+        if (one.isEmpty()) throw new NoFindDataException("学生课程老师信息");
+
+        one.get().setScore(score);
+        schoolStudentCourseTeacherDao.save(one.get());
+
     }
 }

@@ -1,7 +1,7 @@
 package com.github.yiyan1992.carloan.controller.school;
 
-import com.github.yiyan1992.carloan.entity.query.ClassCourse;
-import com.github.yiyan1992.carloan.entity.response.Response;
+import com.github.yiyan1992.carloan.entity.request.ClassCourse;
+import com.github.yiyan1992.carloan.entity.base.Response;
 import com.github.yiyan1992.carloan.entity.school.SchoolClass;
 import com.github.yiyan1992.carloan.service.school.SchoolClassService;
 import org.springframework.beans.factory.annotation.Autowired;

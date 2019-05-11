@@ -1,7 +1,7 @@
 package com.github.yiyan1992.carloan.controller.sys;
 
 import com.github.yiyan1992.carloan.config.MagicValue;
-import com.github.yiyan1992.carloan.entity.response.Response;
+import com.github.yiyan1992.carloan.entity.base.Response;
 import com.github.yiyan1992.carloan.entity.school.SchoolStudent;
 import com.github.yiyan1992.carloan.entity.school.SchoolTeacher;
 import com.github.yiyan1992.carloan.entity.sys.ShiroUser;

@@ -7,10 +7,11 @@ import Role from './views/sys/Role.vue'
 import Menu from "@/views/sys/Menu.vue";
 import SchoolCourse from "@/views/school/SchoolCourse.vue";
 import SchoolClass from "@/views/school/SchoolClass.vue";
-import SchoolRoom from "@/views/school/SchoolRoom.vue";
 import SchoolStudent from "@/views/school/SchoolStudent.vue";
 import SchoolTeacher from "@/views/school/SchoolTeacher.vue";
 import SchoolYear from "@/views/school/SchoolYear.vue";
+import StudentCourse from "@/views/student/myCourse.vue";
+import TeacherCourse from "@/views/teacher/courseScore.vue";
 
 Vue.use(Router);
 
@@ -72,6 +73,16 @@ export default new Router({
                     path: '/year',
                     name: 'year',
                     component: SchoolYear,
+                },
+                {
+                    path: '/studentCourse',
+                    name: 'studentCourse',
+                    component: StudentCourse,
+                },
+                {
+                    path: '/teacherCourse',
+                    name: 'teacherCourse',
+                    component: TeacherCourse,
                 },
             ]
         },

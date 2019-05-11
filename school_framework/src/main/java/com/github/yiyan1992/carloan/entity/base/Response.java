@@ -1,4 +1,4 @@
-package com.github.yiyan1992.carloan.entity.response;
+package com.github.yiyan1992.carloan.entity.base;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

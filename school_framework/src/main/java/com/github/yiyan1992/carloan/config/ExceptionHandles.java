@@ -2,7 +2,7 @@ package com.github.yiyan1992.carloan.config;
 
 
 import com.github.yiyan1992.carloan.entity.exception.NoFindDataException;
-import com.github.yiyan1992.carloan.entity.response.Response;
+import com.github.yiyan1992.carloan.entity.base.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.AuthorizationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;

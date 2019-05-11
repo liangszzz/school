@@ -1,6 +1,6 @@
 package com.github.yiyan1992.carloan.controller.school;
 
-import com.github.yiyan1992.carloan.entity.response.Response;
+import com.github.yiyan1992.carloan.entity.base.Response;
 import com.github.yiyan1992.carloan.entity.school.SchoolYear;
 import com.github.yiyan1992.carloan.service.school.SchoolYearService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,13 +1,11 @@
 package com.github.yiyan1992.carloan.entity.sys;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.yiyan1992.carloan.entity.request.Request;
-import lombok.Data;
+import com.github.yiyan1992.carloan.entity.base.Request;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;

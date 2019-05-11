@@ -1,4 +1,4 @@
-package com.github.yiyan1992.carloan.entity.query;
+package com.github.yiyan1992.carloan.entity.request;
 
 import com.github.yiyan1992.carloan.config.MagicValue;
 import lombok.Data;

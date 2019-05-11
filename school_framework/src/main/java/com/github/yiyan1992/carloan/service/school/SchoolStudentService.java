@@ -1,10 +1,8 @@
 package com.github.yiyan1992.carloan.service.school;
 
-import com.github.yiyan1992.carloan.dao.school.SchoolClassCourseTeacherDao;
-import com.github.yiyan1992.carloan.dao.school.SchoolClassDao;
-import com.github.yiyan1992.carloan.dao.school.SchoolStudentCourseTeacherDao;
-import com.github.yiyan1992.carloan.dao.school.SchoolStudentDao;
+import com.github.yiyan1992.carloan.dao.school.*;
 import com.github.yiyan1992.carloan.entity.exception.NoFindDataException;
+import com.github.yiyan1992.carloan.entity.response.StudentCourseResponse;
 import com.github.yiyan1992.carloan.entity.school.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -13,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +22,9 @@ public class SchoolStudentService {
 
     @Autowired
     private SchoolClassDao schoolClassDao;
+
+    @Autowired
+    private SchoolCourseDao schoolCourseDao;
 
     @Autowired
     private SchoolStudentCourseTeacherDao schoolStudentCourseTeacherDao;
@@ -99,5 +99,29 @@ public class SchoolStudentService {
         List<SchoolStudentCourseTeacher> all = schoolStudentCourseTeacherDao.findAll(Example.of(schoolStudentCourseTeacher));
         schoolStudentCourseTeacherDao.deleteAll(all);
         schoolStudentDao.deleteById(id);
+    }
+
+    public List<StudentCourseResponse> findCourseBySchoolNo(String schoolNo) {
+        Optional<SchoolStudent> student = findUserBySchoolNo(schoolNo);
+        if (student.isEmpty()) throw new NoFindDataException("学生");
+        SchoolStudentCourseTeacher schoolStudentCourseTeacher = new SchoolStudentCourseTeacher();
+        schoolStudentCourseTeacher.setSchoolStudent(student.get());
+        List<SchoolStudentCourseTeacher> all = schoolStudentCourseTeacherDao.findAll(Example.of(schoolStudentCourseTeacher));
+
+        List<StudentCourseResponse> list = new ArrayList<>();
+
+        all.stream().forEach(e -> {
+            StudentCourseResponse studentCourseResponse = new StudentCourseResponse();
+            studentCourseResponse.setId(e.getId());
+            studentCourseResponse.setCourseId(e.getSchoolCourse().getId());
+            studentCourseResponse.setCourseName(e.getSchoolCourse().getName());
+            if (e.getScore() != null)
+                studentCourseResponse.setScore(e.getScore());
+            studentCourseResponse.setTeacherName(e.getSchoolTeacher().getName());
+            studentCourseResponse.setTeacherId(e.getSchoolTeacher().getId());
+
+            list.add(studentCourseResponse);
+        });
+        return list;
     }
 }

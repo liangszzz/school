@@ -2,8 +2,8 @@ package com.github.yiyan1992.carloan.service.school;
 
 import com.github.yiyan1992.carloan.dao.school.SchoolCourseDao;
 import com.github.yiyan1992.carloan.dao.school.SchoolTeacherDao;
-import com.github.yiyan1992.carloan.entity.query.CourseTeacher;
-import com.github.yiyan1992.carloan.entity.response.Response;
+import com.github.yiyan1992.carloan.entity.request.CourseTeacher;
+import com.github.yiyan1992.carloan.entity.base.Response;
 import com.github.yiyan1992.carloan.entity.school.SchoolCourse;
 import com.github.yiyan1992.carloan.entity.school.SchoolTeacher;
 import com.github.yiyan1992.carloan.entity.school.SchoolYear;

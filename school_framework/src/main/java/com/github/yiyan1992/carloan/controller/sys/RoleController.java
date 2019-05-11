@@ -1,6 +1,6 @@
 package com.github.yiyan1992.carloan.controller.sys;
 
-import com.github.yiyan1992.carloan.entity.response.Response;
+import com.github.yiyan1992.carloan.entity.base.Response;
 import com.github.yiyan1992.carloan.entity.sys.Role;
 import com.github.yiyan1992.carloan.service.sys.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;

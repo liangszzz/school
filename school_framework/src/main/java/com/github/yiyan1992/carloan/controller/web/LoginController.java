@@ -1,7 +1,7 @@
 package com.github.yiyan1992.carloan.controller.web;
 
-import com.github.yiyan1992.carloan.entity.query.LoginQuery;
-import com.github.yiyan1992.carloan.entity.response.Response;
+import com.github.yiyan1992.carloan.entity.request.LoginQuery;
+import com.github.yiyan1992.carloan.entity.base.Response;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;

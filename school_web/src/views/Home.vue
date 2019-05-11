@@ -41,14 +41,13 @@
             <template slot="title">
               <span>教师信息</span>
             </template>
-            <el-menu-item>教师改分</el-menu-item>
+            <el-menu-item index="/teacherCourse">教师改分</el-menu-item>
           </el-submenu>
           <el-submenu index="4">
             <template slot="title">
               <span>学生信息</span>
             </template>
-            <el-menu-item>我的课程</el-menu-item>
-            <el-menu-item>学生选课</el-menu-item>
+            <el-menu-item index="/studentCourse">我的课程</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-col>
@@ -133,6 +132,7 @@ export default Vue.extend({
       }
     },
     updatePwd() {
+      let t = this;
       Vue.axios.post("/user/updatePwd", this.form).then(function(res) {
         if (res.data.code == 200) {
           t.$message({

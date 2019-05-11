@@ -1,7 +1,7 @@
 package com.github.yiyan1992.carloan.controller.sys;
 
-import com.github.yiyan1992.carloan.entity.query.RoleMenu;
-import com.github.yiyan1992.carloan.entity.response.Response;
+import com.github.yiyan1992.carloan.entity.request.RoleMenu;
+import com.github.yiyan1992.carloan.entity.base.Response;
 import com.github.yiyan1992.carloan.entity.sys.Menu;
 import com.github.yiyan1992.carloan.service.sys.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;

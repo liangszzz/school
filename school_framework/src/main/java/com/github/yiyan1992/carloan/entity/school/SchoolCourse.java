@@ -1,7 +1,6 @@
 package com.github.yiyan1992.carloan.entity.school;
 
-import com.github.yiyan1992.carloan.entity.request.Request;
-import lombok.Data;
+import com.github.yiyan1992.carloan.entity.base.Request;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Example;

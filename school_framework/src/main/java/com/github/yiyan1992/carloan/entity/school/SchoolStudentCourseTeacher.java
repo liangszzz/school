@@ -27,4 +27,7 @@ public class SchoolStudentCourseTeacher {
 
     @OneToOne
     private SchoolTeacher schoolTeacher;
+
+    @Column(length = 2)
+    private Integer score;
 }
