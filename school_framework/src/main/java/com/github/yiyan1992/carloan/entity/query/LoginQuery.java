@@ -23,11 +23,11 @@ public class LoginQuery {
     public String getUsername() {
         switch (loginType) {
             case "0":
-                return MagicValue.LOGIN_TYPE_0 + username;
+                return MagicValue.LOGIN_TYPE_MANAGE + username;
             case "1":
-                return MagicValue.LOGIN_TYPE_1 + username;
+                return MagicValue.LOGIN_TYPE_TEACHER + username;
             case "2":
-                return MagicValue.LOGIN_TYPE_2 + username;
+                return MagicValue.LOGIN_TYPE_STUDENT + username;
         }
         return username;
     }

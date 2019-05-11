@@ -27,8 +27,8 @@ public class UserController {
     @PostMapping(value = "/home")
     public Response home() {
         Subject subject = SecurityUtils.getSubject();
-        String username = (String) subject.getPrincipals().getPrimaryPrincipal();
-        return Response.of(200, username);
+        Object user =  subject.getPrincipals().getPrimaryPrincipal();
+        return Response.of(200, user);
     }
 
     @PostMapping("/list")

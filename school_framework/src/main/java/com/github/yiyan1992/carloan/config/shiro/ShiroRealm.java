@@ -3,8 +3,7 @@ package com.github.yiyan1992.carloan.config.shiro;
 import com.github.yiyan1992.carloan.config.MagicValue;
 import com.github.yiyan1992.carloan.entity.school.SchoolStudent;
 import com.github.yiyan1992.carloan.entity.school.SchoolTeacher;
-import com.github.yiyan1992.carloan.entity.sys.Menu;
-import com.github.yiyan1992.carloan.entity.sys.Role;
+import com.github.yiyan1992.carloan.entity.sys.ShiroUser;
 import com.github.yiyan1992.carloan.entity.sys.User;
 import com.github.yiyan1992.carloan.service.school.SchoolStudentService;
 import com.github.yiyan1992.carloan.service.school.SchoolTeacherService;
@@ -20,7 +19,6 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class ShiroRealm extends AuthorizingRealm {
 
@@ -44,36 +42,55 @@ public class ShiroRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String username = (String) authenticationToken.getPrincipal();
         SimpleAuthenticationInfo authenticationInfo = null;
+
+
         if (MagicValue.isManage(username)) {
-            username = username.substring(MagicValue.LOGIN_TYPE_0.length());
+            username = username.substring(MagicValue.LOGIN_TYPE_MANAGE.length());
             Optional<User> user = userService.findUserByName(username);
             if (user.isPresent()) {
+                ShiroUser shiroUser = new ShiroUser();
+                shiroUser.setName(user.get().getName());
+                shiroUser.setUserType("管理员:");
+                shiroUser.setObject(user.get());
+
                 authenticationInfo = new SimpleAuthenticationInfo(
-                        username,
+                        shiroUser,
                         user.get().getPassword(),
                         getName()
                 );
             }
         } else if (MagicValue.isTeacher(username)) {
-            username = username.substring(MagicValue.LOGIN_TYPE_1.length());
+            username = username.substring(MagicValue.LOGIN_TYPE_TEACHER.length());
             Optional<SchoolTeacher> user = schoolTeacherService.findUserByWorkNo(username);
             if (user.isPresent()) {
+                ShiroUser shiroUser = new ShiroUser();
+                shiroUser.setName(user.get().getName());
+                shiroUser.setUserType("老师:");
+                shiroUser.setObject(user.get());
+
                 authenticationInfo = new SimpleAuthenticationInfo(
-                        username,
+                        shiroUser,
                         user.get().getPassword(),
                         getName()
                 );
-            }
+            } else
+                return null;
         } else if (MagicValue.isStudent(username)) {
-            username = username.substring(MagicValue.LOGIN_TYPE_2.length());
+            username = username.substring(MagicValue.LOGIN_TYPE_STUDENT.length());
             Optional<SchoolStudent> user = schoolStudentService.findUserBySchoolNo(username);
             if (user.isPresent()) {
+                ShiroUser shiroUser = new ShiroUser();
+                shiroUser.setName(user.get().getName());
+                shiroUser.setUserType("学生:");
+                shiroUser.setObject(user.get());
+
                 authenticationInfo = new SimpleAuthenticationInfo(
-                        username,
+                        shiroUser,
                         user.get().getPassword(),
                         getName()
                 );
-            }
+            } else
+                return null;
         }
         return authenticationInfo;
     }
@@ -87,21 +104,20 @@ public class ShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        String username = (String) principalCollection.getPrimaryPrincipal();
+        ShiroUser user = (ShiroUser) principalCollection.getPrimaryPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        if (MagicValue.isManage(username)) {
-//            Optional<User> user = userService.findUserByName(username.substring(MagicValue.LOGIN_TYPE_0.length()));
-//            if (user.isPresent()) {
-//                for (Role role : user.get().getRoles()) {
-//                    info.addStringPermissions(role.getMenus().stream().map(Menu::getPermission).collect(Collectors.toSet()));
-//                }
+
+        if (user.getObject() instanceof User) {
+            info.addRole(MagicValue.LOGIN_TYPE_MANAGE);
+//            for (Role role : ((User) user).getRoles()) {
+//                info.addStringPermissions(role.getMenus().stream().map(Menu::getPermission).collect(Collectors.toSet()));
 //            }
-            info.addRole(MagicValue.LOGIN_TYPE_0);
-        } else if (MagicValue.isTeacher(username)) {
-            info.addRole(MagicValue.LOGIN_TYPE_1);
-        } else if (MagicValue.isStudent(username)) {
-            info.addRole(MagicValue.LOGIN_TYPE_2);
+        } else if (user.getObject() instanceof SchoolTeacher) {
+            info.addRole(MagicValue.LOGIN_TYPE_TEACHER);
+        } else if (user.getObject() instanceof SchoolStudent) {
+            info.addRole(MagicValue.LOGIN_TYPE_STUDENT);
         }
+
         return info;
     }
 

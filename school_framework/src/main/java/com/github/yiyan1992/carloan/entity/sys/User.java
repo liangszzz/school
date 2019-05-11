@@ -27,7 +27,7 @@ public class User extends Request<User> implements Serializable {
     @Column(name = "username", length = 50)
     private String username;
 
-    @Column(name = "name",length = 50)
+    @Column(name = "name", length = 50)
     private String name;
 
     @JsonIgnore
@@ -46,7 +46,7 @@ public class User extends Request<User> implements Serializable {
     @Column(name = "fail_count")
     private Integer failCount;
 
-
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "s_user_role",
             joinColumns = {@JoinColumn(name = "username", foreignKey = @ForeignKey(name = "username"))},
@@ -55,14 +55,8 @@ public class User extends Request<User> implements Serializable {
 
     @Override
     public Example<User> getExample() {
-        if (StringUtils.isEmpty(username)) {
-            Example<User> userExample = Example.of(this, ExampleMatcher.matching().withIgnorePaths("username"));
-            return userExample;
-        } else {
-            Example<User> userExample = Example.of(this,
-                    ExampleMatcher.matching()
-                            .withMatcher("username", matcher -> matcher.contains()));
-            return userExample;
-        }
+        return Example.of(this,
+                ExampleMatcher.matching()
+                        .withMatcher("username", matcher -> matcher.contains()));
     }
 }
