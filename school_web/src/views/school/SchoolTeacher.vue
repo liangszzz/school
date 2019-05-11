@@ -79,6 +79,9 @@
                 <el-form-item label="教师身份证号" prop="idCard">
                     <el-input v-model="dialog.form.idCard" autocomplete="off"></el-input>
                 </el-form-item>
+                <el-form-item label="密码">
+                    默认密码为身份证号
+                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialog.show = false">取 消</el-button>
@@ -101,7 +104,7 @@
                     name: null,
                     workNo: null,
                     idCard: null,
-                    page: 0,
+                    page: 1,
                     size: 10,
                     total: 0,
                 },
@@ -142,7 +145,7 @@
                 Vue.axios.post("/teacher/list", t.$data[formName]).then(function (res) {
                     if (res.data.code == 200) {
                         t.tableData = res.data.entity.content;
-                        t.queryForm.page = res.data.entity.pageable.pageNumber
+                        t.queryForm.page = res.data.entity.pageable.pageNumber+1
                         t.queryForm.size = res.data.entity.pageable.pageSize
                         t.queryForm.total = res.data.entity.totalElements
                     }
@@ -187,7 +190,7 @@
             },
             showDialogForm(id: Number) {
                 let t = this;
-                Vue.axios.post("/teacher/findClassById/" + id).then(function (res) {
+                Vue.axios.post("/teacher/findById/" + id).then(function (res) {
                     let data = res.data;
                     if (data.code == 200) {
                         t.dialog.form = {

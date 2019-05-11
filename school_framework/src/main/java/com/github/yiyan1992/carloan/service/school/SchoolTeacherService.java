@@ -1,9 +1,7 @@
 package com.github.yiyan1992.carloan.service.school;
 
-import com.github.yiyan1992.carloan.dao.school.SchoolClassCourseTeacherDao;
-import com.github.yiyan1992.carloan.dao.school.SchoolClassDao;
-import com.github.yiyan1992.carloan.dao.school.SchoolCourseDao;
-import com.github.yiyan1992.carloan.dao.school.SchoolTeacherDao;
+import com.github.yiyan1992.carloan.dao.school.*;
+import com.github.yiyan1992.carloan.entity.exception.NoFindDataException;
 import com.github.yiyan1992.carloan.entity.response.Response;
 import com.github.yiyan1992.carloan.entity.school.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +29,20 @@ public class SchoolTeacherService {
     @Autowired
     private SchoolClassCourseTeacherDao schoolClassCourseTeacherDao;
 
+    @Autowired
+    private SchoolStudentCourseTeacherDao schoolStudentCourseTeacherDao;
+
     public SchoolTeacher save(SchoolTeacher schoolTeacher) {
+        if (schoolTeacher.getId() == null) {
+            schoolTeacher.setPassword(schoolTeacher.getIdCard());
+        } else {
+            Optional<SchoolTeacher> teacher = schoolTeacherDao.findById(schoolTeacher.getId());
+            if (teacher.isEmpty()) throw new NoFindDataException("教师");
+            schoolTeacher.setPassword(teacher.get().getPassword());
+        }
         return schoolTeacherDao.save(schoolTeacher);
     }
 
-    /**
-     * 根据教师工号查询
-     *
-     * @param workNo
-     * @return
-     */
     public Optional<SchoolTeacher> findUserByWorkNo(String workNo) {
         SchoolTeacher schoolTeacher = new SchoolTeacher();
         schoolTeacher.setWorkNo(workNo);
@@ -57,6 +59,19 @@ public class SchoolTeacherService {
     }
 
     public void deleteById(Integer id) {
+        Optional<SchoolTeacher> teacher = schoolTeacherDao.findById(id);
+        if (teacher.isEmpty()) throw new NoFindDataException("教师");
+        //删除班级课程老师
+        SchoolClassCourseTeacher schoolClassCourseTeacher = new SchoolClassCourseTeacher();
+        schoolClassCourseTeacher.setSchoolTeacher(teacher.get());
+        List<SchoolClassCourseTeacher> schoolClassCourseTeachers = schoolClassCourseTeacherDao.findAll(Example.of(schoolClassCourseTeacher));
+        schoolClassCourseTeacherDao.deleteAll(schoolClassCourseTeachers);
+        //获取学生课程老师
+        SchoolStudentCourseTeacher schoolStudentCourseTeacher = new SchoolStudentCourseTeacher();
+        schoolStudentCourseTeacher.setSchoolTeacher(teacher.get());
+        List<SchoolStudentCourseTeacher> schoolStudentCourseTeachers = schoolStudentCourseTeacherDao.findAll(Example.of(schoolStudentCourseTeacher));
+        schoolStudentCourseTeacherDao.deleteAll(schoolStudentCourseTeachers);
+        //删除老师
         schoolTeacherDao.deleteById(id);
     }
 
@@ -66,12 +81,7 @@ public class SchoolTeacherService {
 
     public List<SchoolTeacher> findAllByCourse(Integer courseId) {
         Optional<SchoolCourse> course = schoolCourseDao.findById(courseId);
-        if (course.isPresent()) {
-            List<SchoolTeacher> teachers = new ArrayList<>();
-            teachers.addAll(course.get().getSchoolTeachers());
-            return teachers;
-        }
-        return null;
+        return course.map(schoolCourse -> new ArrayList<>(schoolCourse.getSchoolTeachers())).orElse(null);
     }
 
     public Response findByCourseAndClass(Integer courseId, Integer classId) {

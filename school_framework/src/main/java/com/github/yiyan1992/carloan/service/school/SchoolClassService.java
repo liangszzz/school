@@ -4,6 +4,7 @@ import com.github.yiyan1992.carloan.dao.school.SchoolClassCourseTeacherDao;
 import com.github.yiyan1992.carloan.dao.school.SchoolClassDao;
 import com.github.yiyan1992.carloan.dao.school.SchoolCourseDao;
 import com.github.yiyan1992.carloan.dao.school.SchoolTeacherDao;
+import com.github.yiyan1992.carloan.entity.exception.NoFindDataException;
 import com.github.yiyan1992.carloan.entity.query.ClassCourse;
 import com.github.yiyan1992.carloan.entity.response.Response;
 import com.github.yiyan1992.carloan.entity.school.SchoolClass;
@@ -50,6 +51,7 @@ public class SchoolClassService {
     }
 
     public void deleteById(Integer id) {
+
         schoolClassDao.deleteById(id);
     }
 
@@ -57,8 +59,7 @@ public class SchoolClassService {
         Optional<SchoolClass> schoolClass = schoolClassDao.findById(classCourse.getId());
         if (schoolClass.isPresent()) {
             List<SchoolCourse> courses = schoolCourseDao.findAllById(classCourse.getCourses());
-            Set<SchoolCourse> set = new HashSet<>();
-            set.addAll(courses);
+            Set<SchoolCourse> set = new HashSet<>(courses);
             schoolClass.get().setCourses(set);
             schoolClassDao.save(schoolClass.get());
             return Response.success("保存成功!");
@@ -77,7 +78,7 @@ public class SchoolClassService {
             Optional<SchoolClassCourseTeacher> one = schoolClassCourseTeacherDao.findOne(Example.of(schoolClassCourseTeacher));
 
             if (teacherId == null) {
-                schoolClassCourseTeacherDao.delete(one.get());
+                one.ifPresent(classCourseTeacher -> schoolClassCourseTeacherDao.delete(classCourseTeacher));
                 return Response.success("成功!");
             } else {
                 Optional<SchoolTeacher> schoolTeacher = schoolTeacherDao.findById(teacherId);
@@ -90,9 +91,7 @@ public class SchoolClassService {
                         schoolClassCourseTeacherDao.save(schoolClassCourseTeacher);
                     }
                 } else {
-                    if (one.isPresent()) {
-                        schoolClassCourseTeacherDao.delete(one.get());
-                    }
+                    one.ifPresent(classCourseTeacher -> schoolClassCourseTeacherDao.delete(classCourseTeacher));
                 }
                 return Response.success("成功!");
             }

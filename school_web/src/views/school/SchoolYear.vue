@@ -72,7 +72,7 @@
             return {
                 queryForm: {
                     name: null,
-                    page: 0,
+                    page: 1,
                     size: 10,
                     total: 0,
                 },
@@ -109,7 +109,7 @@
                 Vue.axios.post("/year/list", t.$data[formName]).then(function (res) {
                     if (res.data.code == 200) {
                         t.tableData = res.data.entity.content;
-                        t.queryForm.page = res.data.entity.pageable.pageNumber
+                        t.queryForm.page = res.data.entity.pageable.pageNumber+1
                         t.queryForm.size = res.data.entity.pageable.pageSize
                         t.queryForm.total = res.data.entity.totalElements
                     }

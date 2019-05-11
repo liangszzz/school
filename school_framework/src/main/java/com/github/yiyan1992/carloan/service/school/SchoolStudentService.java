@@ -44,12 +44,18 @@ public class SchoolStudentService {
                 List<SchoolStudentCourseTeacher> list = schoolStudentCourseTeacherDao.findAll(example);
                 schoolStudentCourseTeacherDao.deleteAll(list);
             }
+            if (schoolStudent.getId() == null) {
+                schoolStudent.setPassword(schoolStudent.getIdCard());
+            } else {
+                Optional<SchoolStudent> student = schoolStudentDao.findById(schoolStudent.getId());
+                if (student.isEmpty()) throw new NoFindDataException("学生");
+                schoolStudent.setPassword(student.get().getPassword());
+            }
+
             schoolStudent = schoolStudentDao.save(schoolStudent);
 
             List<SchoolStudentCourseTeacher> savelist = new ArrayList<>();
-            Iterator<SchoolCourse> iterator = schoolClass.get().getCourses().iterator();
-            while (iterator.hasNext()) {
-                SchoolCourse next = iterator.next();
+            for (SchoolCourse next : schoolClass.get().getCourses()) {
                 SchoolStudentCourseTeacher tmp = new SchoolStudentCourseTeacher();
                 tmp.setSchoolStudent(schoolStudent);
                 tmp.setSchoolCourse(next);
@@ -57,7 +63,7 @@ public class SchoolStudentService {
                 schoolClassCourseTeacher.setSchoolClass(schoolClass.get());
                 schoolClassCourseTeacher.setSchoolCourse(next);
                 Optional<SchoolClassCourseTeacher> one = schoolClassCourseTeacherDao.findOne(Example.of(schoolClassCourseTeacher));
-                if (!one.isPresent()) throw new NoFindDataException("班级老师课程");
+                if (one.isEmpty()) throw new NoFindDataException("班级老师课程");
                 tmp.setSchoolTeacher(one.get().getSchoolTeacher());
                 savelist.add(tmp);
             }
@@ -85,7 +91,7 @@ public class SchoolStudentService {
 
     public void deleteById(Integer id) {
         Optional<SchoolStudent> schoolStudent = schoolStudentDao.findById(id);
-        if (!schoolStudent.isPresent()) {
+        if (schoolStudent.isEmpty()) {
             throw new NoFindDataException("学生");
         }
         SchoolStudentCourseTeacher schoolStudentCourseTeacher = new SchoolStudentCourseTeacher();

@@ -108,6 +108,9 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="密码">
+             默认密码为身份证号
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialog.show = false">取 消</el-button>
@@ -130,7 +133,7 @@ export default Vue.extend({
         schoolNo: null,
         "schoolYear.id": "",
         "schoolClass.id": "",
-        page: 0,
+        page: 1,
         size: 10,
         total: 0
       },
@@ -196,7 +199,7 @@ export default Vue.extend({
       Vue.axios.post("/student/list", t.$data[formName]).then(function(res) {
         if (res.data.code == 200) {
           t.tableData = res.data.entity.content;
-          t.queryForm.page = res.data.entity.pageable.pageNumber;
+          t.queryForm.page = res.data.entity.pageable.pageNumber+1;
           t.queryForm.size = res.data.entity.pageable.pageSize;
           t.queryForm.total = res.data.entity.totalElements;
         }
