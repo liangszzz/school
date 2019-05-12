@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <header>
-      <h1>校园信息管理平台</h1>
+      <h1>课程管理系统</h1>
       <p></p>
     </header>
     <br>
@@ -67,6 +67,13 @@ export default Vue.extend({
                 });
                 sessionStorage.setItem("Authorization", res.data.entity);
                 t.$router.replace("/home");
+              }
+              else{
+                t.$message({
+                  message: "登陆失败!",
+                  type: "error",
+                  showClose: true
+                });
               }
             });
         } else {
