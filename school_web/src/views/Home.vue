@@ -24,6 +24,8 @@
               <span>系统管理</span>
             </template>
             <el-menu-item index="/user">管理员管理</el-menu-item>
+            <el-menu-item index="/role">管理员管理</el-menu-item>
+            <el-menu-item index="/menu">管理员管理</el-menu-item>
           </el-submenu>
           <el-submenu index="2" v-if="userType=='管理员:'">
             <template slot="title">
