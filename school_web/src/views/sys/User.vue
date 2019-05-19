@@ -77,18 +77,18 @@
         <span>{{ roleDialog.title }}</span>
       </div>
       <el-table
-        ref="teacherTable"
+        ref="roleTable"
         :data="roleDialog.tableData"
         max-height="400px"
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"/>
-        <el-table-column sortable prop="name" label="教师名称"/>
-        <el-table-column sortable prop="workNo" label="教师工号"/>
+        <el-table-column sortable prop="roleName" label="角色名称"/>
+        <el-table-column sortable prop="roleDesc" label="角色描述"/>
       </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="roleDialog.show = false">取 消</el-button>
-        <el-button type="primary" @click="saveTeacher">确 定</el-button>
+        <el-button type="primary" @click="saveRole">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -129,6 +129,7 @@ export default Vue.extend({
         }
       },
       roleDialog: {
+        currentUser: "",
         title: "添加",
         show: false,
         tableData: [],
@@ -200,7 +201,68 @@ export default Vue.extend({
     handleSelectionChange(val: any) {
       this.roleDialog.multipleSelection = val;
     },
-    toRole(index: number, row: any) {},
+    toRole(index: number, row: any) {
+      let t = this;
+      t.roleDialog.currentUser = row.username;
+      t.roleDialog.title = "选择角色";
+      t.roleDialog.show = true;
+
+      Vue.axios.post("/role/all/").then(function(res) {
+        let data = res.data;
+        if (data.code == 200) {
+          t.roleDialog.tableData = data.entity;
+        }
+      });
+
+      setTimeout(() => {
+        Vue.axios
+          .post("/role/findByUsername/" + row.username)
+          .then(function(res) {
+            let data = res.data;
+            if (data.code == 200) {
+              t.$refs.roleTable.clearSelection();
+              let roles = res.data.entity;
+              roles.forEach(value => {
+                let index = t.roleDialog.tableData.findIndex(
+                  (value1: never, index: number, obj: never[]) => {
+                    return value1.roleName === value.roleName;
+                  }
+                );
+                t.$refs.roleTable.toggleRowSelection(
+                  t.roleDialog.tableData[index]
+                );
+              });
+            }
+          });
+      }, 100);
+    },
+    saveRole() {
+      let t = this;
+      let roles: String[] = [];
+      t.roleDialog.multipleSelection.forEach(e => {
+        roles.push(e.roleName);
+      });
+
+      Vue.axios
+        .post(
+          "/user/saveRole",
+          {
+            username: t.roleDialog.currentUser,
+            roles: roles
+          },
+          { headers: { "content-type": "application/json" } }
+        )
+        .then(res => {
+          if (res.data.code == 200) {
+            t.$message({
+              message: "保存成功!",
+              type: "success",
+              showClose: true
+            });
+            t.roleDialog.show = false;
+          }
+        });
+    },
     showDialogForm(username: string) {
       let t = this;
       Vue.axios

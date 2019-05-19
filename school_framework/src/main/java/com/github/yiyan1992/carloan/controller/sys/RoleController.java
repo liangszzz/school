@@ -30,12 +30,22 @@ public class RoleController {
 
     @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
     @PostMapping("/findById/{roleName}")
-    public Response findClassById(@PathVariable String roleName) {
+    public Response findById(@PathVariable String roleName) {
         Optional<Role> role = roleService.findById(roleName);
         if (role.isPresent()) {
             return Response.success(role.get());
         }
         return Response.of(500, "角色不存在");
+    }
+
+    @PostMapping("/all")
+    public Response findAll() {
+        return Response.success(roleService.findAll());
+    }
+
+    @PostMapping("/findByUsername/{username}")
+    public Response findByUsername(@PathVariable String username) {
+        return Response.success(roleService.findByUsername(username));
     }
 
     @RequiresRoles(MagicValue.LOGIN_TYPE_MANAGE)
